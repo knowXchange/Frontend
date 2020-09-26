@@ -29,7 +29,7 @@
 
 <script>
 export default {
-    name : 'demo'
+    name : 'login'
     
 }
 </script>
