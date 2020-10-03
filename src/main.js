@@ -6,10 +6,18 @@ import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Panel from 'primevue/panel';
 
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+Vue.use(BootstrapVue);
+Vue.use(IconsPlugin);
+
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+import 'primeflex/primeflex.css';
+
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
 
 
 Vue.config.productionTip = false
