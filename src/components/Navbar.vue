@@ -1,6 +1,7 @@
 <template>
  <!-- Barra de navegacion responsive con "lg" -->
     <b-navbar  toggleable = "lg"  type = "dark"   style="background:linear-gradient(0deg,#f8f9fa 50%, #adebad 50%;" > 
+        
             
             <b-container>                
                 <div class="mx-auto">
