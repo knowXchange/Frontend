@@ -3,6 +3,18 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import Button from 'primevue/button';
+import Card from 'primevue/card';
+import Panel from 'primevue/panel';
+import Dialog from 'primevue/dialog';
+
+import 'primevue/resources/themes/saga-blue/theme.css';
+import 'primevue/resources/primevue.min.css';
+import 'primeicons/primeicons.css';
+import 'primeflex/primeflex.css';
+
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
@@ -12,7 +24,12 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 
 Vue.config.productionTip = false
-
+Vue.component('InputText', InputText);
+Vue.component('Password', Password);
+Vue.component('Button', Button);
+Vue.component('Card',Card);
+Vue.component('Panel', Panel);
+Vue.component('Dialog', Dialog);
 
 new Vue({
   router,
