@@ -39,10 +39,12 @@
 </template>
 
 <script>
+import UserService from '../service/UserService' 
 export default {
     name : 'login',
     data() {
-        return {       
+        return {   
+            Users : null,    
             Usuario: "",
             Contraseña: "",     
             display: false,
@@ -51,7 +53,16 @@ export default {
             texto : ""
         }
     },  
-    
+    userService : null,
+    created(){
+        this.userService = new UserService();
+
+    },
+    mounted(){
+        this.userService.getAll().then(data => {
+            console.log(data);
+        })
+    },
     methods:{
         mostrar: function(texto){
             this.display = true, 
