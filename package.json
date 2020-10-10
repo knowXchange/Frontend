@@ -9,6 +9,7 @@
   "dependencies": {
     "bootstrap-vue": "^2.17.3",
     "core-js": "^3.6.5",
+    "primeflex": "^2.0.0",
     "primeicons": "^4.0.0",
     "primevue": "^2.1.0",
     "vue": "^2.6.11",
