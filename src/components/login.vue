@@ -8,9 +8,8 @@
         
         <Panel header='Login'>            
             <h5>Usuario</h5>
-            <span class="p-float-label" >
-                <InputText id="username" type="text" v-model="value" class="p-mr-2 p-d-block"/>
-                <label for="username">Username</label>
+            <span class="p-float-label">
+                <InputText id="username" type="text" v-model="value" />
             </span>
             <h5>Contraseña</h5>       
             <Password v-model="value" />
