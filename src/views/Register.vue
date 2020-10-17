@@ -1,79 +1,123 @@
 <template>
 <div class="card" style="font-family: 'Segoe UI', Arial, sans-serif;">
-    <div id="Encabezado" class="layout-toplbar p-text-center p-shadow-2 p-p-4" >
-        <router-link to="/"> KnowXChange </router-link>
-        
+    <topbar/>
+    <div class="card">
+        <Steps :model="items" :readonly="true" />
     </div>
     <div class="p-text-center" style="margin:0 auto; width: 25rem; margin-bottom: 2em">
-        <Panel header='Registro de usuario'>            
-            <h5>Nombre de Usuario</h5>
-            <InputText id="username" type="text" v-model="Usuario"/>
-            <h5>Correo electronico</h5>
-            <InputText id="emailaddress" type="email" v-model="Usuario"/>
-            <h5>Contraseña</h5>
-            <Password v-model="Contraseña" v-bind:feedback="false"/>
-            <h5>Confirmar contraseña</h5>
-            <Password v-model="Contraseña" v-bind:feedback="false"/>
+        <Panel header='Registro de usuario'>  
+            <div class="p-field p-fluid">          
+                <h5 class="p-text-left">Nombre de Usuario</h5>
+                <InputText id="username" type="text" v-model="user.name"/>
+                <small id="username2-help" class="p-invalid" :hidden="huser">Falta nombre de usuario.</small>
+            </div>
+            <div class="p-field p-fluid">
+                <h5 class="p-text-left">Correo electronico</h5>
+                <InputText id="emailaddress" type="email" v-model="user.email"/>
+                <small id="username2-help" class="p-invalid" :hidden="hemail">Falta correo electronico.</small>
+            </div>
+            <div class="p-field p-fluid">
+                <h5 class="p-text-left">Contraseña</h5>
+                <Password v-model="user.password" :feedback="true"/>
+                <small id="username2-help" class="p-invalid" :hidden="hpassword">Falta contraseña</small>
+            </div>
+            <div class="p-field p-fluid">
+                <h5 class="p-text-left">Confirmar contraseña</h5>
+                <Password v-model="vpassword" :feedback="false"/>
+                <small id="username2-help" class="p-invalid" :hidden="hvpassword">Las contraseñas no coinciden.</small>
+            </div>            
 
             <h5></h5>
             <Button 
                 label="Ya estas registrado?" 
                 class="p-button-link" 
-                @click.native="mostrar('Ir a login')">
+                @click="$router.push('login')">
             </Button>
             <h5></h5>
             
             <Button 
                 label="Registrarse" 
                 class="p-d-block p-mx-auto" 
-                @click.native="mostrar('Registrarse')"/>   
+                @click.native="VRegistro('as')"/>   
             <Dialog                 
                 :visible.sync="display" 
-                :header.sync="mensaje"
+                header='Atencion!!!'
                 :v-text.sync="texto"
                 :modal="true" 
                 :style="{width:'50vw'}">                
-                Se presiono el boton {{texto}}
+                {{texto}}
             </Dialog>         
             <h5></h5>
         </Panel>
     </div>
+    <router-view/>
 </div>
 </template>
 
 <script>
+import topbar from '..z/components/topbar'
 import UserService from '../service/UserService' 
 export default {
     name : 'Register',
+    components: {
+        topbar
+    },
     data() {
         return {   
-            Users : null,    
-            Usuario: "",
-            Contraseña: "",     
+            items: [{
+                label: 'Personal',
+                to: '/register'
+            },
+            {
+                label: 'Seat',
+                to: '/steps/seat'
+            }],
+            Users : null,   
+            user:{ 
+                name: "",
+                email: "",
+                password: "",
+                tocken: 100,
+                description: "hola soy"
+            },  
+            vpassword: "",   
             display: false,
             mensaje : "",
-            user : null,
-            texto : ""
+            texto : "",
+            pass: "",
+            huser: true,
+            hemail: true,
+            hpassword: true,  
+            hvpassword: true,
         }
     },  
     userService : null,
     created(){
         this.userService = new UserService();
 
-    },
-    mounted(){
-        this.userService.getAll().then(data => {
-            console.log(data);
-        })
-    },
+    },    
     methods:{
         mostrar: function(texto){
             this.display = true, 
-            this.mensaje = texto, 
             this.texto = texto          
         },
         ocultar: function() {
             this.display = false
+        },
+        VRegistro: function(sg){
+            if (this.user.name == "") this.huser = false
+            else this.huser = true
+            if (this.user.email=="") this.hemail = false
+            else this.hemail = true
+            if (this.user.password== "") this.hpassword=false
+            else this.hpassword=true
+            if (this.vpassword == "" || this.user.password!=this.vpassword) this.hvpassword=false
+            else this.hvpassword=true
+            if (this.huser==true && this.hemail==true && this.hpassword==true && this.hvpassword==true){
+                this.userService.add(this.user).then(data => {
+                    if(data.request.status==200) this.mostrar("Registro exitoso")                    
+                })                
+            }                
         }
     }
 

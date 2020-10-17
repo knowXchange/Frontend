@@ -9,6 +9,8 @@ import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Panel from 'primevue/panel';
 import Dialog from 'primevue/dialog';
+import Steps from 'primevue/steps';
+import Textarea from 'primevue/textarea';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -30,6 +32,8 @@ Vue.component('Button', Button);
 Vue.component('Card',Card);
 Vue.component('Panel', Panel);
 Vue.component('Dialog', Dialog);
+Vue.component('Steps', Steps)
+Vue.component('Textarea',Textarea)
 
 new Vue({
   router,

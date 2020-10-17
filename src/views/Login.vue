@@ -32,8 +32,9 @@
                 Se presiono el boton {{texto}}
             </Dialog>         
             <h5></h5>
-            <Button label="Registrarse" @click="mostrar('Registrarse')"/>
+            <Button label="Registrarse" @click="$router.push('register')"/>
         </Panel>
+        <router-view/>
     </div>
 </div>
 </template>
