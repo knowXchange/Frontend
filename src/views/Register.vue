@@ -1,9 +1,6 @@
 <template>
 <div class="card" style="font-family: 'Segoe UI', Arial, sans-serif;">
     <topbar/>
-    <div class="card">
-        <Steps :model="items" :readonly="true" />
-    </div>
     <div class="p-text-center" style="margin:0 auto; width: 25rem; margin-bottom: 2em">
         <Panel header='Registro de usuario'>  
             <div class="p-field p-fluid">          
@@ -55,7 +52,7 @@
 </template>
 
 <script>
-import topbar from '..z/components/topbar'
+import topbar from '../components/topbar'
 import UserService from '../service/UserService' 
 export default {
     name : 'Register',
