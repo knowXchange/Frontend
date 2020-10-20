@@ -23,6 +23,23 @@ const routes = [
     name: 'Register',
     component: () => import(/* webpackChunkName: "register" */'../views/Register.vue')
   },
+  {
+    path: '/account',
+    name: 'Account',
+    component: () => import(/* webpackChunkName: "register" */'../views/Account.vue'),
+    children: [
+      {
+        path: "my-courses",
+        name: "MyCourses",
+        component: ()=> import('../components/MyCourses.vue')
+      },
+      {
+        path: "my-info",
+        name: "MyInfo",
+        component: ()=> import('../components/MyInfo.vue')
+      }
+    ]
+  }
 ]
 
 const router = new VueRouter({

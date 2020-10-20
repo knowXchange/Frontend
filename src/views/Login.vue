@@ -1,9 +1,6 @@
 <template>
 <div class="card" style="font-family: 'Segoe UI', Arial, sans-serif;">
-    <div id="Encabezado" class="layout-toplbar p-text-center p-shadow-2 p-p-4" >
-        <router-link to="/"> KnowXChange </router-link>
-        
-    </div>
+    <topbar/>
     <div class="p-text-center" style="margin:0 auto; width: 25rem; margin-bottom: 2em">
         
         
@@ -41,8 +38,12 @@
 
 <script>
 import UserService from '../service/UserService' 
+import topbar from '../components/topbar'
 export default {
     name : 'login',
+    components: {
+        topbar
+    },
     data() {
         return {   
             Users : null,    
@@ -79,9 +80,5 @@ export default {
 </script>
 
 <style>
-#Encabezado{
-    margin-bottom: 2em;
-    font-size: 30px;
-    background-color: #adebad;  
-}
+
 </style>

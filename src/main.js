@@ -11,6 +11,9 @@ import Panel from 'primevue/panel';
 import Dialog from 'primevue/dialog';
 import Steps from 'primevue/steps';
 import Textarea from 'primevue/textarea';
+import TabMenu from 'primevue/tabmenu';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -34,6 +37,9 @@ Vue.component('Panel', Panel);
 Vue.component('Dialog', Dialog);
 Vue.component('Steps', Steps)
 Vue.component('Textarea',Textarea)
+Vue.component('TabMenu', TabMenu)
+Vue.component('DataTable', DataTable);
+Vue.component('Column', Column);
 
 new Vue({
   router,
