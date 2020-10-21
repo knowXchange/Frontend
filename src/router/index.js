@@ -31,12 +31,24 @@ const routes = [
       {
         path: "my-courses",
         name: "MyCourses",
-        component: ()=> import('../components/MyCourses.vue')
+        component: ()=> import('../components/MyCourses.vue'),
+        children:[
+          {
+            path: "courses-enrrolled",
+            name: "CoursesEnrrolled",
+            component: ()=> import('../components/CoursesEnrrolled.vue')
+          },
+          {
+            path: "courses-created",
+            name: "CoursesCreated",
+            component: ()=> import('../components/CoursesCreated.vue'),
+          }
+        ]
       },
       {
         path: "my-info",
         name: "MyInfo",
-        component: ()=> import('../components/MyInfo.vue')
+        component: ()=> import('../components/MyInfo.vue'),        
       }
     ]
   }

@@ -11,4 +11,19 @@ export default class UserService {
     getAll() {
         return axios.get (this.url + "getAll");
     }
+    login(user){
+        return axios.get(this.url + "get-login"+"?name="+user.name+"&password="+user.password)
+    }
+    getUser(id){
+        return axios.get(this.url+"getById/"+id)
+    }
+    updateUser(user){
+        return axios.post(this.url + "modifyUser/"+user.id,{
+            name: user.name.trim( ),
+            email: user.email.trim( ),
+            password: user.password,
+            tokens: user.tokens,
+            description: user.description.trim( ) 
+        })
+    }
 }

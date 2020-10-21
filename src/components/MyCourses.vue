@@ -1,36 +1,23 @@
 <template>
     <div>
-        <div>
-
-        </div>
-        <div style="margin: 0 auto; width: 80%">
-            <DataTable :value="courses" :selection="courseSelection" dataKey="id" :paginator="true" :rows="10">
-                <Column selectionMode="multiple" headerStyle="width: 3em"></Column>
-                <Column field="id" header="ID"></Column>
-                <Column field="courseName" header="Curso"></Column>
-                <Column field="durationHours" header="Duracion"></Column>
-                <Column :exportable="false">
-                    <template>
-                        <Button icon="pi pi-trash" class="p-button-rounded p-button-warning"/>
-                    </template>
-                </Column>
-            </DataTable>
-        </div>
-    </div>   
+    <TabMenu :model="items" />      
+    <router-view/>
+    </div>
 </template>
-<script>    
+<script>
 export default {
-    name: 'MyCourses',
+    name: 'account',
     data(){
-        return{
-            courseSelection: null,
-            courses: [
-                {id:0,courseName:"curso nuevo",durationHours:100},
-                {id:0,courseName:"curso nuevo",durationHours:100},
-                {id:0,courseName:"curso nuevo",durationHours:100}
-            ]
-        }
+        return {
+                items: [
+                    {label: 'Cursos Inscritos', icon: 'pi pi-fw pi-folder', to: '/account/my-courses/courses-enrrolled'},
+                    {label: 'Cursos Creados', icon: 'pi pi-fw pi-folder', to: '/account/my-courses/courses-created'},
+                ]
+            }
     }
-
+    
 }
 </script>
+<style>
+
+</style>

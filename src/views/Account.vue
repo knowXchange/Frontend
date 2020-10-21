@@ -17,7 +17,7 @@ export default {
         return {
                 items: [
                     {label: 'Mi Perfil', icon: 'pi pi-fw pi-user', to: '/account/my-info'},
-                    {label: 'Mis Cursos', icon: 'pi pi-fw pi-folder', to: '/account/my-courses'},
+                    {label: 'Cursos', icon: 'pi pi-fw pi-folder', to: '/account/my-courses'},
                 ]
             }
     }

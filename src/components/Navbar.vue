@@ -22,7 +22,7 @@
                         </b-nav-form>
                         
                         <!-- Boton de inicio de sesión -->
-                        <b-button  variant = "outline-primary" style="background:#f8f9fa; border-color:green; color:#28a745; margin:0px 20px 0px 20px;" to="/login"> Iniciar sesión </b-button >
+                        <b-button  variant = "outline-primary" style="background:#f8f9fa; border-color:green; color:#28a745; margin:0px 20px 0px 20px;" @click="isLogin()"> Iniciar sesión </b-button >
 
                     </b-navbar>
                     <!-- importa la ruta de login para el boton de inicio de sesión -->
@@ -37,7 +37,15 @@
 
 <script>
 export default {
-    name : 'Navbar'
+    name : 'Navbar',
+    methods:{
+        isLogin: function(){
+            if(localStorage.getItem('id')!=0){
+                this.$router.push('account/my-info')
+            }
+            else this.$router.push('login')
+        }
+    }
 
 }
 </script>

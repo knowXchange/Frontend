@@ -14,6 +14,11 @@
                 <small id="username2-help" class="p-invalid" :hidden="hemail">Falta correo electronico.</small>
             </div>
             <div class="p-field p-fluid">
+                <h5 class="p-text-left">Descripcion</h5>
+                <Textarea v-model="user.description" :autoResize="true" rows="5" cols="30"/>
+                <small id="username2-help" class="p-invalid" :hidden="hdescription">Falta descripcion</small>
+            </div>
+            <div class="p-field p-fluid">
                 <h5 class="p-text-left">Contraseña</h5>
                 <Password v-model="user.password" :feedback="true"/>
                 <small id="username2-help" class="p-invalid" :hidden="hpassword">Falta contraseña</small>
@@ -84,6 +89,7 @@ export default {
             pass: "",
             huser: true,
             hemail: true,
+            hdescription: true,
             hpassword: true,  
             hvpassword: true,
         }
@@ -106,11 +112,13 @@ export default {
             else this.huser = true
             if (this.user.email=="") this.hemail = false
             else this.hemail = true
+            if (this.user.description=="") this.hdescription = false
+            else this.hdescription = true
             if (this.user.password== "") this.hpassword=false
             else this.hpassword=true
             if (this.vpassword == "" || this.user.password!=this.vpassword) this.hvpassword=false
             else this.hvpassword=true
-            if (this.huser==true && this.hemail==true && this.hpassword==true && this.hvpassword==true){
+            if (this.huser==true && this.hemail==true && this.hpassword==true && this.hvpassword==true && this.hdescription==true){
                 this.userService.add(this.user).then(data => {
                     if(data.request.status==200) this.mostrar("Registro exitoso")                    
                 })                

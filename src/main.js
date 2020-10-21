@@ -14,6 +14,8 @@ import Textarea from 'primevue/textarea';
 import TabMenu from 'primevue/tabmenu';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import Dropdown from 'primevue/dropdown';
+import Toolbar from 'primevue/toolbar'
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -40,6 +42,8 @@ Vue.component('Textarea',Textarea)
 Vue.component('TabMenu', TabMenu)
 Vue.component('DataTable', DataTable);
 Vue.component('Column', Column);
+Vue.component('Dropdown',Dropdown);
+Vue.component('Toolbar', Toolbar);
 
 new Vue({
   router,

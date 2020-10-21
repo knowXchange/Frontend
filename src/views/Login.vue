@@ -6,27 +6,20 @@
         
         <Panel header='Inicio de sesion'>            
             <h5>Usuario</h5>
-            <InputText id="username" type="text" v-model="Usuario"/>
+            <InputText id="username" type="text" v-model="User.name"/>
             <h5>Contraseña</h5>       
-            <Password v-model="Contraseña" v-bind:feedback="false"/>
-            <h5></h5>
-            <Button 
-                label="Recuperar Contraseña" 
-                class="p-button-link" 
-                @click.native="mostrar('Recuperar')">
-            </Button>
+            <Password v-model="User.password" v-bind:feedback="false"/>
             <h5></h5>
             <Button 
                 label="Iniciar Sesion" 
                 class="p-d-block p-mx-auto" 
-                @click.native="mostrar('Iniciar sesion')"/>   
+                @click.native="SingIn()"/>   
             <Dialog                 
                 :visible.sync="display" 
-                :header.sync="mensaje"
-                :v-text.sync="texto"
+                header="Datos incorrectos"
                 :modal="true" 
                 :style="{width:'50vw'}">                
-                Se presiono el boton {{texto}}
+                Usuario o contraseña incorrectos
             </Dialog>         
             <h5></h5>
             <Button label="Registrarse" @click="$router.push('register')"/>
@@ -46,13 +39,13 @@ export default {
     },
     data() {
         return {   
-            Users : null,    
-            Usuario: "",
-            Contraseña: "",     
+            Users : null,
+            User:{
+                name: null,
+                password: null
+            },    
             display: false,
-            mensaje : "",
             user : null,
-            texto : ""
         }
     },  
     userService : null,
@@ -73,12 +66,22 @@ export default {
         },
         ocultar: function() {
             this.display = false
+        },
+        SingIn: function(){
+            this.userService.login(this.User).then(data=>{
+                if(data.data == 0)
+                    this.mostrar("Usuario o contraseña incorrectos")
+                else{
+                    localStorage.setItem('id',data.data),
+                    this.$router.push('Account/my-info')
+                }
+            })
         }
+
     }
 
 }
 </script>
 
 <style>
-
 </style>
