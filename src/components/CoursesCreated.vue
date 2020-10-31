@@ -67,7 +67,8 @@ export default {
             courseDT:{},
             htitle: true,
             hdescription: true,          
-            courses: []
+            courses: [],
+            courses2: [],
         }
     },
     kbService: null,
@@ -114,7 +115,23 @@ export default {
                 this.coursesService.add(this.Course).then(data=>{
                     console.log(data)
                 });
+                this.displayCreate = false;
+                this.activate();
+                
             }
+        },
+        getCreated: function(){
+            this.created=[];
+            this.coursesService.getCreated().then(data=>{
+                    console.log(data.data);
+                    for (let index = 0; index < data.data.length; index++) {
+                        console.log(data.data);
+                       this.courses.push(data.data[index]);                    
+                    }    
+                });
+        },
+        activate() {
+            setTimeout(() => this.getCreated(), 100000);
         },
         deleteCourse: function(course){ 
             console.log(course)   

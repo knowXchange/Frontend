@@ -18,12 +18,9 @@ export default class UserService {
         return axios.get(this.url+"getById/"+id)
     }
     updateUser(user){
-        return axios.post(this.url + "modifyUser/"+user.id,{
-            name: user.name.trim( ),
-            email: user.email.trim( ),
-            password: user.password,
-            tokens: user.tokens,
-            description: user.description.trim( ) 
-        })
+        return axios.put(this.url + "modifyUser/"+user.id+"?email="+user.email+"&description="+user.description)
+    }
+    updatePassword(user){
+        return axios.put(this.url + "modifyPassword/"+user.id+"?password="+user.password)
     }
 }
