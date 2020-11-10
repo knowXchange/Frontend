@@ -35,26 +35,33 @@ import SearchService from '../service/CoursesService';
             curso: null,
             id: null,
             items: [
-                {
-                         label:'Buscar',
-                         icon:'pi pi-fw pi-calendar-times',
-                         items:[
+                
+                        //  label:'Buscar',
+                        //  icon:'pi pi-fw pi-calendar-times',
+                        //  items:[
                             {
                                label:'Filtrar',
                                icon:'pi pi-fw pi-filter',
                                items:[
                                   {
-                                     label:'Area Science',
-                                     icon:'pi pi-fw pi-print',
+                                     label:'Area de Ciencia',
+                                     icon:'pi pi-fw pi-apple',
                                      command: () => {
                                         this.buscarRama(1);
                                      }
                                   },
                                   {
-                                     label:'Area Tecnology',
-                                     icon:'pi pi-fw pi-print',
+                                     label:'Area de Tecnologia',
+                                     icon:'pi pi-fw pi-android',
                                      command: () => {
                                         this.buscarRama(2);
+                                     }
+                                  },
+                                  {
+                                     label:'Mostrar todos',
+                                     icon:'pi pi-fw pi-undo',
+                                     command: () => {
+                                        this.getAll();
                                      }
                                   }
 
@@ -62,8 +69,8 @@ import SearchService from '../service/CoursesService';
                             }
                          ]
                       }
-            ]   
-            } 
+               
+             
         },  
         created() {
             this.varSearchService = new SearchService(); 
