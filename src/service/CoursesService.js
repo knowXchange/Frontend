@@ -23,5 +23,8 @@ export default class UserService {
     getAll(){
         return axios.get(this.url+"getAll")
     }
+    getByBranch(id){
+        return axios.get(this.url+"/getByBranch/"+id)
+    }
 
 }
