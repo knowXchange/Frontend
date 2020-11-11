@@ -1,7 +1,7 @@
 <template>
 <div>
     <div style=" background-color:#adebad; width:auto; height:100px">
-        <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> knowXchange  </h1>
+        <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> <router-link to="/"> KnowXChange </router-link>  </h1>
     </div>
     <div>
         <Menubar :model="items">
@@ -16,75 +16,107 @@
     </div>
     <div style="margin:0 auto; width: 80%" >
         <br>
-        <DataTable :value="curso" :paginator="true" :rows="10">           
+        <DataTable :value="curso" :paginator="true" :rows="3" :selection.sync="idCursoSeleccion" dataKey="id">           
+            
             <Column field="title" header="Nombre del curso"></Column>
             <Column field="description" header="Descripción del curso"></Column>
+            <Column :exportable="false">
+                <template  #body="slotProps">
+                    <Button label="Ver curso" icon="pi pi-external-link" @click="openMaximizable(slotProps.data)" />
+                </template>
+            </Column>
+                   
         </DataTable>
+        
+        <Dialog :header.sync="course.title" :visible.sync="displayMaximizable" :style="{width: '50vw'}" :maximizable="true" :modal="true">
+            <p class="p-m-0"></p>
+            <div class="p-text-left">
+                <h5>Descripcion del curso</h5>
+                {{course.description}}
+            </div>  
+            <div>
+                <h5>Cantidad de Clases: {{lessons.length}}</h5>
+                <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">                
+                    <Column field="title" header="Titulo"></Column>  
+                </DataTable> 
+            </div>  
+            <template #footer>
+                <Button label="Volver" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
+                <Button label="Inscribirse" icon="pi pi-check" @click="closeMaximizable" autofocus />
+            </template>
+        </Dialog>        
     </div>
 </div>
 </template>
 
 <script>
 import SearchService from '../service/CoursesService';
-  
+import topbar from '../components/topbar'  
+    
     export default {
     
         name: 'Search',
         varSearchService : null,
         
+        components: {
+            topbar
+        },  
+
         data() {        
             return {   
             cursosRama: null,         
             curso: null,
+            course: {},
+            lessons:[],
             id: null,
             entrada: null,
+            displayMaximizable: false,
+            idCursoSeleccion: {
+                id:null
+            },
             items: [
-                
-                        //  label:'Buscar',
-                        //  icon:'pi pi-fw pi-calendar-times',
-                        //  items:[
-                            {
-                               label:'Filtrar',
-                               icon:'pi pi-fw pi-filter',
-                               items:[
-                                  {
-                                     label:'Area de Ciencia',
-                                     icon:'pi pi-fw pi-apple',
-                                     command: () => {
-                                        this.buscarRama(1);
-                                     }
-                                  },
-                                  {
-                                     label:'Area de Tecnologia',
-                                     icon:'pi pi-fw pi-android',
-                                     command: () => {
-                                        this.buscarRama(2);
-                                     }
-                                  },
-                                  {
-                                     label:'Mostrar todos',
-                                     icon:'pi pi-fw pi-undo',
-                                     command: () => {
-                                        this.getAll();
-                                     }
-                                  }
-
-                               ]
+                {
+                    label:'Filtrar',
+                    icon:'pi pi-fw pi-filter',
+                    items:[
+                        {
+                            label:'Area de Ciencia',
+                            icon:'pi pi-fw pi-apple',
+                            command: () => {
+                             this.buscarRama(1);
                             }
-                         ]
-                      }
-               
+                        },
+                        {
+                         label:'Area de Tecnologia',
+                         icon:'pi pi-fw pi-android',
+                         command: () => {
+                            this.buscarRama(2);
+                         }
+                         },
+                        {
+                         label:'Mostrar todos',
+                         icon:'pi pi-fw pi-undo',
+                         command: () => {
+                            this.getAllCourses();
+                         }
+                        }
+
+                     ]
+                }
+                ]
+            }       
              
-        },  
+        }, 
+
         created() {
             this.varSearchService = new SearchService(); 
         },
         mounted(){
-            this.getAll();
+            this.getAllCourses();
         },
         methods:{
-            getAll(){
-                this.varSearchService.getAll().then(data => {
+            getAllCourses(){
+                this.varSearchService.getAllCourses().then(data => {
                     this.curso = data.data;
                     console.log(this.curso);
                 });
@@ -104,9 +136,28 @@ import SearchService from '../service/CoursesService';
                 });
                 }
                 else {
-                    this.getAll();
+                    this.getAllCourses();
                 }
+            },
+            openMaximizable(course) {
+                console.log(course)
+                this.course = course;
+                this.varSearchService.getLessons(course.id).then(data=>{
+                    this.lessons = data.data
+                });
+                this.displayMaximizable = true;                
+            },
+            closeMaximizable() {
+                this.displayMaximizable = false;
+                this.getAllCourses();
+            },
+            buscarIdCurso(idCurso){
+                this.varSearchService.getCourseById(idCurso).then(data => {
+                    this.curso = data.data;
+                    console.log(this.curso);           
+                });
             }
+            
         } 
     
 }

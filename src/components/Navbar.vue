@@ -7,7 +7,7 @@
                 <div class="mx-auto">
                     <b-navbar  class="mx-auto">
                         <!-- Desplegable de cursos -->
-                        <b-dropdown  style="margin:0px 20px 0px 20px; background:#f8f9fa;" id = "dropdown-left"  split 
+                        <!-- <b-dropdown  style="margin:0px 20px 0px 20px; background:#f8f9fa;" id = "dropdown-left"  split 
                             split-variant = "outline-success" 
                             variant = "success" 
                             text = "Cursos" 
@@ -15,7 +15,8 @@
                             <b-dropdown-item  href = "#" > Curso 1 </b-dropdown-item > 
                             <b-dropdown-item  href = "#" > Curso 2 </b-dropdown-item > 
                             <b-dropdown-item  href = "#" > Curso 3 </b-dropdown-item> 
-                        </b-dropdown >
+                        </b-dropdown > -->
+                        <Button label="Buscar Cursos"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="irBuscar"/>
                         <!-- Barra de busqueda -->
                         <b-nav-form style="margin:0px 20px 0px 20px;">                            
                             <b-form-input class="mx-auto" placeholder="Search" style="border-color:green; background:#f8f9fa; color:#28a745;"></b-form-input>            
@@ -36,14 +37,30 @@
 
 
 <script>
+import SearchService from '../service/CoursesService';
+
 export default {
     name : 'Navbar',
+    varSearchService : null,
+    data() {        
+            return {      
+            curso: null,
+            id: null,
+            entrada: null,
+            }
+    },
+    created() {
+            this.varSearchService = new SearchService(); 
+        },
     methods:{
         isLogin: function(){
             if(localStorage.getItem('id')!=0){
                 this.$router.push('login')
             }
             else this.$router.push('account/my-info')
+        },
+        irBuscar(){
+            this.$router.push('search')
         }
     }
 
