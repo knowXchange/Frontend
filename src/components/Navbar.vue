@@ -54,7 +54,7 @@ export default {
         },
     methods:{
         isLogin: function(){
-            if(localStorage.getItem('id')!=0){
+            if(localStorage.getItem('id')==0){
                 this.$router.push('login')
             }
             else this.$router.push('account/my-info')
