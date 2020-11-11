@@ -32,5 +32,8 @@ export default class UserService {
     getCourseById(id){
         return axios.get(this.url+"/getCourseById/"+id)
     }
+    getLessons(id){
+        return axios.get(this.url2+"getLessonByCourseId/"+id)
+    }
 
 }

@@ -16,20 +16,30 @@
     </div>
     <div style="margin:0 auto; width: 80%" >
         <br>
-        <Button label="Ver curso" icon="pi pi-external-link" @click="openMaximizable" /> 
-        <DataTable :value="curso" :paginator="true" :rows="3" :selection.sync="idCursoSeleccion" selectionMode="single" dataKey="id">           
+        <DataTable :value="curso" :paginator="true" :rows="3" :selection.sync="idCursoSeleccion" dataKey="id">           
             
             <Column field="title" header="Nombre del curso"></Column>
             <Column field="description" header="Descripción del curso"></Column>
+            <Column :exportable="false">
+                <template  #body="slotProps">
+                    <Button label="Ver curso" icon="pi pi-external-link" @click="openMaximizable(slotProps.data)" />
+                </template>
+            </Column>
                    
         </DataTable>
         
-        <Dialog header="" :visible.sync="displayMaximizable" :style="{width: '50vw'}" :maximizable="true" :modal="true">
+        <Dialog :header.sync="course.title" :visible.sync="displayMaximizable" :style="{width: '50vw'}" :maximizable="true" :modal="true">
             <p class="p-m-0"></p>
-             <DataTable :value="curso" >
-                <Column field="description" header="Descripción del curso"></Column>
-                   
-            </DataTable>    
+            <div class="p-text-left">
+                <h5>Descripcion del curso</h5>
+                {{course.description}}
+            </div>  
+            <div>
+                <h5>Cantidad de Clases: {{lessons.length}}</h5>
+                <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">                
+                    <Column field="title" header="Titulo"></Column>  
+                </DataTable> 
+            </div>  
             <template #footer>
                 <Button label="Volver" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
                 <Button label="Inscribirse" icon="pi pi-check" @click="closeMaximizable" autofocus />
@@ -56,6 +66,8 @@ import topbar from '../components/topbar'
             return {   
             cursosRama: null,         
             curso: null,
+            course: {},
+            lessons:[],
             id: null,
             entrada: null,
             displayMaximizable: false,
@@ -127,10 +139,13 @@ import topbar from '../components/topbar'
                     this.getAllCourses();
                 }
             },
-            openMaximizable() {
-                this.displayMaximizable = true;
-                console.log(this.idCursoSeleccion.id);
-                this.buscarIdCurso(this.idCursoSeleccion.id);
+            openMaximizable(course) {
+                console.log(course)
+                this.course = course;
+                this.varSearchService.getLessons(course.id).then(data=>{
+                    this.lessons = data.data
+                });
+                this.displayMaximizable = true;                
             },
             closeMaximizable() {
                 this.displayMaximizable = false;
