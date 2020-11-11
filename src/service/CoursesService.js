@@ -20,14 +20,17 @@ export default class UserService {
     delete(id){
         return axios.delete(this.url+"deleteCourse/"+id)
     }
-    getAll(){
-        return axios.get(this.url+"getAll")
+    getAllCourses(){
+        return axios.get(this.url+"getAllCourses")
     }
     getByBranch(id){
         return axios.get(this.url+"/getByBranch/"+id)
     }
     getByWord(subcadena){
         return axios.get(this.url+"/getByWord/"+subcadena)
+    }
+    getCourseById(id){
+        return axios.get(this.url+"/getCourseById/"+id)
     }
 
 }
