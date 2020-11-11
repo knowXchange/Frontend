@@ -1,7 +1,7 @@
 <template>
 <div>
     <div style=" background-color:#adebad; width:auto; height:100px">
-        <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> knowXchange  </h1>
+        <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> <router-link to="/"> KnowXChange </router-link>  </h1>
     </div>
     <div>
         <Menubar :model="items">
@@ -26,12 +26,14 @@
 
 <script>
 import SearchService from '../service/CoursesService';
-  
+import topbar from '../components/topbar'  
     export default {
     
         name: 'Search',
         varSearchService : null,
-        
+        components: {
+            topbar
+        },        
         data() {        
             return {   
             cursosRama: null,         
