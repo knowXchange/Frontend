@@ -6,8 +6,11 @@
     <div>
         <Menubar :model="items">
             <template #end>
-                <InputText placeholder="Buscar" type="text" />
-                <Button label="Logout" icon="pi pi-power-off" :style="{'margin-left': '0 .5em'}"/>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search" />
+                    <InputText  type="text" v-model="entrada" />                    
+                </span>   
+                <Button label="Buscar"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
             </template>
         </Menubar>
     </div>
@@ -34,6 +37,7 @@ import SearchService from '../service/CoursesService';
             cursosRama: null,         
             curso: null,
             id: null,
+            entrada: null,
             items: [
                 
                         //  label:'Buscar',
@@ -91,6 +95,17 @@ import SearchService from '../service/CoursesService';
                     console.log(this.curso);           
                 });
                 
+            },
+            buscarSubcadena(){
+                if (this.entrada != null && this.entrada != ""){
+                this.varSearchService.getByWord(this.entrada).then(data => {
+                    this.curso = data.data;
+                    console.log(this.curso);           
+                });
+                }
+                else {
+                    this.getAll();
+                }
             }
         } 
     

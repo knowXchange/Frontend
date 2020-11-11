@@ -41,9 +41,9 @@ export default {
     methods:{
         isLogin: function(){
             if(localStorage.getItem('id')!=0){
-                this.$router.push('account/my-info')
+                this.$router.push('login')
             }
-            else this.$router.push('login')
+            else this.$router.push('account/my-info')
         }
     }
 
