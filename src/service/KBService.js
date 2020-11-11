@@ -19,5 +19,9 @@ export default class UserService {
     getBbyK(nameK){
         return axios.get(this.urlB + "FilterBranchesByKnowledgeField?FieldName="+nameK)
     }
+
+    getBranch(id){
+        return axios.get(this.urlB + "getFieldBranchById/"+id)    
+    }
     
 }

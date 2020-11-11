@@ -124,7 +124,6 @@ export default {
         })
         this.coursesService.getCreated().then(
             data=>{
-                console.log(data);
                 this.courses = data.data;
             }
         );
@@ -136,33 +135,23 @@ export default {
         })
         },
         openCreate: function(){
-            this.Course = [];
+            this.resetFields();
+            this.BLabel = "Crear";
             this.displayCreate=true;
         },
         closeCreate: function(){
             this.displayCreate=false;
+            this.resetFields();
         },
-        createCourse: function(){
-            console.log(this.selectedArea);
-            console.log(this.selectedBranch);
-            if(this.Course.title=="" || this.Course.title == null)this.htitle=false;
-            else this.htitle=true;
-            if(this.selectedArea == null || this.selectedBranch==null)
-                this.hfilter = false;
-            else this.hfilter = true;
-            if(this.Course.description==null || this.Course.description=="")this.hdescription=false;
-            else this.hdescription=true;
-            if(this.lessons.length == 0) this.hlessonTable = false;
-            else this.hlessonTable = true;
-            if(this.htitle && this.hdescription && this.hlessonTitle && this.hlessonDescription && this.hlessonTable && this.selectedBranch!=null){                
+        createCourse: function(course, lessons){  
+            if(this.selectedBranch != null){
                 this.Course.branchId = this.selectedBranch.id;
-                this.coursesService.add(this.Course).then(data=>{
-                    this.coursesService.addLessons(data.data,this.lessons);
-                });
-                this.courses = [];
-                this.getCreated();              
-                this.displayCreate = false;                
-            }
+                this.coursesService.add(course).then(data=>{
+                    this.coursesService.addLessons(data.data.id,lessons);
+                    this.courses.push(data.data);                    
+                });                 
+                this.displayCreate=false;                            
+            }    
         },
         getCreated: function(){
             this.created=[];
@@ -170,7 +159,7 @@ export default {
                     console.log(data.data);
                     for (let index = 0; index < data.data.length; index++) {
                         console.log(data.data);
-                       this.courses.push(data.data[index]);                    
+                        this.courses.push(data.data[index]);                    
                     }    
                 });
         },
@@ -179,14 +168,21 @@ export default {
             this.coursesService.getLessons(course.id).then(data=>{
                 this.lessons = data.data
             });
+            this.selectedBranch = this.branch[this.Course.area];
             this.BLabel = "Actualizar";
             this.displayCreate = true;
         },
-        updateCourse: function(course){
-
+        updateCourse: function(course, lessons){
+            if(this.selectedArea == null && this.selectedBranch == null)
+                this.coursesService.updatePlain(course);
+            else {
+                this.Course.branchId = this.selectedBranch.id;
+                this.coursesService.updateAll(course);
+            }
+            this.coursesService.addLessons(course.id, lessons);
+            this.displayCreate = false;
         },
-        deleteCourse: function(course){ 
-            console.log(course)   
+        deleteCourse: function(course){   
             this.courseDT=course;        
             this.coursesService.delete(course.id);
             this.courses = this.courses.filter(val =>val.id !== this.courseDT.id);
@@ -216,19 +212,45 @@ export default {
                 this.lessonDT = {};
             }
         },
-        deleteLesson: function(lesson){ 
-            console.log(lesson)   
+        deleteLesson: function(lesson){
+            if(this.Course.id != null)
+                this.coursesService.deleteLesson(lesson.id);  
             this.lessonDT=lesson;
             this.lessons = this.lessons.filter(val =>val.id !== this.lessonDT.id);
         },
         editLesson: function(Lesson){
             this.lessonDT = Lesson;
         },
-        courseAction: function(){
-            if(this.courseDT.id == null)
-                this.createCourse(this.courseDT)
-            else
-                this.updateCourse(this.courseDT)
+        courseAction: function(){   
+            if(this.Course.title=="" || this.Course.title == null)this.htitle=false;
+            else this.htitle=true; 
+            if(this.selectedArea == null || this.selectedBranch==null)
+                this.hfilter = false;
+            else this.hfilter = true;           
+            if(this.Course.description==null || this.Course.description=="")this.hdescription=false;
+            else this.hdescription=true;
+            if(this.lessons.length == 0) this.hlessonTable = false;
+            else this.hlessonTable = true;
+            if(this.htitle && this.hdescription && this.hlessonTable){ 
+                console.log(this.Course)
+                if(this.Course.id == null){
+                    this.createCourse(this.Course, this.lessons);
+                }
+                else this.updateCourse(this.Course, this.lessons);
+                this.resetFields();
+            }
+        },
+        resetFields: function(){            
+            this.htitle = true;
+            this.hfilter = true;
+            this.hdescription= true;
+            this.hlessonTitle= true;
+            this.hlessonDescription= true;
+            this.hlessonTable= true;
+            this.Course = {};
+            this.lessons = [];     
+            this.lessonDT = {};     
+            this.courseDT = {}; 
         }
     }    
 }
