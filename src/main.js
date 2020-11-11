@@ -17,7 +17,7 @@ import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
 import Toolbar from 'primevue/toolbar'
 import Menubar from 'primevue/menubar';
-
+import Editor from 'primevue/editor';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -47,7 +47,7 @@ Vue.component('Column', Column);
 Vue.component('Dropdown',Dropdown);
 Vue.component('Toolbar', Toolbar);
 Vue.component('Menubar', Menubar);
-
+Vue.component('Editor', Editor);
 
 new Vue({
   router,
