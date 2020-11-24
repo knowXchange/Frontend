@@ -23,4 +23,7 @@ export default class UserService {
     updatePassword(user){
         return axios.put(this.url + "modifyPassword/"+user.id+"?password="+user.password)
     }
+    registerCourse(idUser, idCourse){
+        return axios.put(this.url + "register-into-course/"+idUser+"/"+idCourse)
+    }
 }

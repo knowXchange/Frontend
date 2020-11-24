@@ -124,6 +124,7 @@ export default {
         })
         this.coursesService.getCreated().then(
             data=>{
+                console.log(data.data);
                 this.courses = data.data;
             }
         );
@@ -156,9 +157,9 @@ export default {
         getCreated: function(){
             this.created=[];
             this.coursesService.getCreated().then(data=>{
-                    console.log(data.data);
+                    
                     for (let index = 0; index < data.data.length; index++) {
-                        console.log(data.data);
+                        
                         this.courses.push(data.data[index]);                    
                     }    
                 });
@@ -168,7 +169,6 @@ export default {
             this.coursesService.getLessons(course.id).then(data=>{
                 this.lessons = data.data
             });
-            this.selectedBranch = this.branch[this.Course.area];
             this.BLabel = "Actualizar";
             this.displayCreate = true;
         },
@@ -232,7 +232,7 @@ export default {
             if(this.lessons.length == 0) this.hlessonTable = false;
             else this.hlessonTable = true;
             if(this.htitle && this.hdescription && this.hlessonTable){ 
-                console.log(this.Course)
+                
                 if(this.Course.id == null){
                     this.createCourse(this.Course, this.lessons);
                 }
@@ -247,6 +247,8 @@ export default {
             this.hlessonTitle= true;
             this.hlessonDescription= true;
             this.hlessonTable= true;
+            this.selectedArea = null;
+            this.selectedBranch = null;
             this.Course = {};
             this.lessons = [];     
             this.lessonDT = {};     

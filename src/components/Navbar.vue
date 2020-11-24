@@ -1,11 +1,11 @@
 <template>
  <!-- Barra de navegacion responsive con "lg" -->
-    <b-navbar  toggleable = "lg"  type = "dark"   style="background:linear-gradient(0deg,#f8f9fa 50%, #adebad 50%;" > 
+    <b-navbar toggleable = "lg"  type = "dark"   style="background:linear-gradient(0deg,#f8f9fa 50%, #adebad 50%;" > 
         
             
             <b-container>                
                 <div class="mx-auto">
-                    <b-navbar  class="mx-auto">
+                    <b-navbar id="navBar" class="mx-auto">
                         <!-- Desplegable de cursos -->
                         <!-- <b-dropdown  style="margin:0px 20px 0px 20px; background:#f8f9fa;" id = "dropdown-left"  split 
                             split-variant = "outline-success" 
@@ -23,7 +23,9 @@
                         </b-nav-form>
                         
                         <!-- Boton de inicio de sesión -->
-                        <b-button  variant = "outline-primary" style="background:#f8f9fa; border-color:green; color:#28a745; margin:0px 20px 0px 20px;" @click="isLogin()"> Iniciar sesión </b-button >
+                        <Button :label.sync="buttonLabelA" style="background:#f8f9fa;" class="p-button-outlined p-button-success p-mr-2" @click="actionA()"/>
+                        <!-- Boton para registrarse o cerrar sesion -->
+                        <Button :label.sync="buttonLabelB" style="background:#f8f9fa;" class="p-button-outlined p-button-success" @click="actionB()"/>
 
                     </b-navbar>
                     <!-- importa la ruta de login para el boton de inicio de sesión -->
@@ -38,26 +40,54 @@
 
 <script>
 import SearchService from '../service/CoursesService';
-
+import UserService from '../service/UserService';
 export default {
     name : 'Navbar',
     varSearchService : null,
+    userService: null,
     data() {        
             return {      
             curso: null,
             id: null,
             entrada: null,
+            buttonLabelA: "",
+            buttonLabelB: "",
             }
     },
     created() {
             this.varSearchService = new SearchService(); 
+            this.userService = new UserService();
+            if(localStorage.getItem('id')==0){
+                this.buttonLabelA = "Iniciar Sesion";
+                this.buttonLabelB = "Registrarse";
+            }
+            else{
+                this.userService.getUser(localStorage.getItem('id')).then(data => {
+                    console.log(data),
+                    this.buttonLabelA = "Hola "+ data.data.name
+                });
+                this.buttonLabelB = "Cerrar Sesion";         
+            }
         },
+    beforeMount(){
+    },
+    mounted(){
+    },
     methods:{
-        isLogin: function(){
+        actionA: function(){
             if(localStorage.getItem('id')==0){
                 this.$router.push('login')
             }
             else this.$router.push('account/my-info')
+        },
+        actionB: function(){
+            if(localStorage.getItem('id')==0){
+                this.$router.push('register')
+            }
+            else{
+                localStorage.setItem('id',0);
+                location.reload();
+            }
         },
         irBuscar(){
             this.$router.push('search')

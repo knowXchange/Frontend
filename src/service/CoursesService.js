@@ -37,6 +37,8 @@ export default class UserService {
         return axios.get(this.url2+"getLessonByCourseId/"+id)
     }
     addLessons(id, Lessons){
+        console.log(id);
+        console.log(Lessons);
         for (let index = 0; index < Lessons.length; index++) {
             
                 axios.post(this.url2+"editLessonByIdKX?id="+Lessons[index].id+"&title="+Lessons[index].title+"&description="+Lessons[index].description)

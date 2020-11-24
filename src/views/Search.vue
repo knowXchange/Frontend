@@ -42,22 +42,26 @@
             </div>  
             <template #footer>
                 <Button label="Volver" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
-                <Button label="Inscribirse" icon="pi pi-check" @click="closeMaximizable" autofocus />
+                <Button label="Inscribirse" icon="pi pi-check" @click="inscribir()" autofocus />
             </template>
-        </Dialog>        
+        </Dialog> 
+        <Dialog :header.sync="message.title" :visible.sync="message.display" :style="{width: '50vw'}" :modal="true">
+            {{message.content}}
+        </Dialog>       
     </div>
 </div>
 </template>
 
 <script>
 import SearchService from '../service/CoursesService';
-import topbar from '../components/topbar'  
+import topbar from '../components/topbar' 
+import UserService from '../service/UserService' 
     
     export default {
     
         name: 'Search',
         varSearchService : null,
-        
+        userService: null,
         components: {
             topbar
         },  
@@ -73,6 +77,11 @@ import topbar from '../components/topbar'
             displayMaximizable: false,
             idCursoSeleccion: {
                 id:null
+            },
+            message: {
+                title:'',
+                display: false,
+                content: '',
             },
             items: [
                 {
@@ -110,6 +119,7 @@ import topbar from '../components/topbar'
 
         created() {
             this.varSearchService = new SearchService(); 
+            this.userService = new UserService();
         },
         mounted(){
             this.getAllCourses();
@@ -118,21 +128,18 @@ import topbar from '../components/topbar'
             getAllCourses(){
                 this.varSearchService.getAllCourses().then(data => {
                     this.curso = data.data;
-                    console.log(this.curso);
                 });
             },
             buscarRama(numero){
                 this.varSearchService.getByBranch(numero).then(data => {
-                    this.curso = data.data;
-                    console.log(this.curso);           
+                    this.curso = data.data;           
                 });
                 
             },
             buscarSubcadena(){
                 if (this.entrada != null && this.entrada != ""){
                 this.varSearchService.getByWord(this.entrada).then(data => {
-                    this.curso = data.data;
-                    console.log(this.curso);           
+                    this.curso = data.data;           
                 });
                 }
                 else {
@@ -140,7 +147,6 @@ import topbar from '../components/topbar'
                 }
             },
             openMaximizable(course) {
-                console.log(course)
                 this.course = course;
                 this.varSearchService.getLessons(course.id).then(data=>{
                     this.lessons = data.data
@@ -153,9 +159,25 @@ import topbar from '../components/topbar'
             },
             buscarIdCurso(idCurso){
                 this.varSearchService.getCourseById(idCurso).then(data => {
-                    this.curso = data.data;
-                    console.log(this.curso);           
+                    this.curso = data.data;         
                 });
+            },
+            inscribir: function(){
+                if(localStorage.getItem('id')!=0)
+                    this.userService.registerCourse(localStorage.getItem('id'),this.course.id)
+                    .then(data=>{
+                        console.log(data);
+                        if (data.status === 200){
+                            this.message.title = 'Insccripcion Exitosa';
+                            this.message.content = 'La inscripcion al curso fue exitosa, podras encontrar el curso en tu perfil >> cursos >> cursos inscritos'
+                            this.message.display=true;
+                        }
+                        else{
+                            this.message.title = 'Insccripcion Fallida';
+                            this.message.content = 'La inscripcion al curso no fue exitosa';
+                            this.message.display=true;
+                        }
+                    });          
             }
             
         } 
