@@ -14,7 +14,7 @@
             </template>
         </Menubar>
         <br>
-        <h5>Filtrar</h5>
+        <h4>Filtrar</h4>
         <Dropdown v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area" @change="searchBranch()" class="p-mr-2 p-mb-2"/>
         <Dropdown v-model="selectedBranch" :options="branch" optionLabel="title" placeholder="Rama" class="p-mr-2"/>   
     </div>
