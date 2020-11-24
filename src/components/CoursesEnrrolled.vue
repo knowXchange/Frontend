@@ -3,7 +3,7 @@
         <div>
         </div>
         <div style="margin: 0 auto; width: 80%">
-            <DataTable :value="courses" :selection="courseSelection" dataKey="id" :paginator="true" :rows="10">
+            <DataTable :value="courses" :paginator="true" :rows="10">
                 <Column field="title" header="Curso"></Column>
                 <Column :exportable="false">                
                     <template #body="slotProps">
@@ -13,7 +13,7 @@
             </DataTable>
         </div>
         <Dialog :visible.sync="displayLessons" :header.sync="course.title" :modal="true" :style="{width: '80vw'}">
-            <DataTable ref="dt" :value="lessons" :selection.sync="lessonSelection" dataKey="id" :paginator="true" :rows="10">
+            <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">
                 <Column field="title" header="Lecciones"></Column>
                 <Column :exportable="false">
                     <template  #body="slotProps">
@@ -26,8 +26,8 @@
             :visible.sync="displayLesson" 
             :header.sync="course.title" 
             :modal="true" 
-            :maximizable="true" 
-            :style="{width: '100vw'}">
+            :maximizable="true"
+            :style="{width: '100%'}">
             <div class="p-grid p-jc-between">
                 <div class="p-col-2">
                     <Button 
@@ -55,6 +55,20 @@
             </div>
             <div>
                 Comentarios preguntas y/o respuestas de la leccion
+                <div style="margin-top: .5em">
+                    <transition-group name="dynamic-box" tag="div" class="p-jc-end">
+                        <div v-for="col of Comentarios" :key="col" class="p-col p-jc-end">
+                            <div class="box p-shadow-11">{{col.titulo}}</div>
+                            <div style="margin-top: .5em">
+                                <transition-group name="dynamic-box" tag="div">
+                                    <div v-for="ans of col.respuestas" :key="ans" class="p-col">
+                                        <div class="box p-shadow-9" style="margin-left:auto; margin-right:0; width: 80%">{{ans}}</div>
+                                    </div>
+                                </transition-group>
+                            </div>
+                        </div>
+                    </transition-group>
+                </div>
             </div>              
         </Dialog>
     </div>   
@@ -74,6 +88,23 @@ export default {
             displayLesson: false,
             displayLessons: false,
             posLesson: 0,
+            Comentarios:[
+                {
+                    titulo: "pregunta",
+                    respuestas:[
+                        "respuesta A1",
+                        "respuesta A2"
+                    ]
+                },
+                {
+                    titulo: "pregunta 2",
+                    respuestas:[
+                        "respuesta B1",
+                        "respuesta B2"
+                    ]
+                }
+
+            ]
         }
     },
     kbService: null,
@@ -90,9 +121,9 @@ export default {
     },
     methods:{
         showLessons: function(course){
-            this.course = course;
-            this.course.title = 'Curso: ' + this.course.title;  
+            this.course = course; 
             this.coursesService.getLessons(course.id).then(data=>{
+                console.log(data.data)
                 this.lessons = data.data
             });
             this.displayLessons = true;
