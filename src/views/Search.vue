@@ -60,12 +60,13 @@
 import SearchService from '../service/CoursesService';
 import topbar from '../components/topbar' 
 import UserService from '../service/UserService' 
-import kbService from '../service/KBService'   
+import KBService from '../service/KBService'   
     export default {
     
         name: 'Search',
         varSearchService : null,
         userService: null,
+        kbService: null,
         components: {
             topbar
         },  
@@ -134,17 +135,17 @@ import kbService from '../service/KBService'
             this.getAllCourses();
             this.kbService.getAllK().then(data => {
                 this.area = data.data;
-                })
+            })
             this.kbService.getBbyK().then(data=>{
                  this.branch = data.data;
-                })
+            })
         },
         methods:{
             searchBranch: function(){
                 this.kbService.getBbyK(this.selectedArea.title).then(data=>{
                     this.branch = data.data;
                 });
-        },
+            },
             getAllCourses(){
                 this.varSearchService.getAllCourses().then(data => {
                     this.curso = data.data;
