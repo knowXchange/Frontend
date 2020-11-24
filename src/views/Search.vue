@@ -4,8 +4,8 @@
         <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> <router-link to="/"> KnowXChange </router-link>  </h1>
     </div>
     <div>
-        <Menubar :model="items">
-            <template #end>
+        <Menubar >
+            <template #end :style="{'margin':auto}">
                 <span class="p-input-icon-left">
                     <i class="pi pi-search" />
                     <InputText  type="text" v-model="entrada" />                    
@@ -13,6 +13,10 @@
                 <Button label="Buscar"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
             </template>
         </Menubar>
+        <br>
+        <h5>Filtrar</h5>
+        <Dropdown v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area" @change="searchBranch()" class="p-mr-2 p-mb-2"/>
+        <Dropdown v-model="selectedBranch" :options="branch" optionLabel="title" placeholder="Rama" class="p-mr-2"/>   
     </div>
     <div style="margin:0 auto; width: 80%" >
         <br>
@@ -56,7 +60,7 @@
 import SearchService from '../service/CoursesService';
 import topbar from '../components/topbar' 
 import UserService from '../service/UserService' 
-    
+import kbService from '../service/KBService'   
     export default {
     
         name: 'Search',
@@ -67,7 +71,11 @@ import UserService from '../service/UserService'
         },  
 
         data() {        
-            return {   
+            return {
+            selectedArea: null,
+            area:[],
+            selectedBranch: null,
+            branch: [],       
             cursosRama: null,         
             curso: null,
             course: {},
@@ -120,11 +128,23 @@ import UserService from '../service/UserService'
         created() {
             this.varSearchService = new SearchService(); 
             this.userService = new UserService();
+            this.kbService = new KBService();
         },
         mounted(){
             this.getAllCourses();
+            this.kbService.getAllK().then(data => {
+                this.area = data.data;
+                })
+            this.kbService.getBbyK().then(data=>{
+                 this.branch = data.data;
+                })
         },
         methods:{
+            searchBranch: function(){
+                this.kbService.getBbyK(this.selectedArea.title).then(data=>{
+                    this.branch = data.data;
+                });
+        },
             getAllCourses(){
                 this.varSearchService.getAllCourses().then(data => {
                     this.curso = data.data;
