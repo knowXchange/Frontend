@@ -184,8 +184,9 @@ export default {
             var temp = this.question
             this.qService.postReply(this.replyDialog).then(
                 data=>{   
-                    var n = this.questions.findIndex(element => element == temp);                
-                    console.log(this.questions.find(element == temp));
+                    if(this.questions.find(element => element == temp).replys == null)
+                        this.questions.find(element => element == temp).replys = [data.data];
+                    else this.questions.find(element => element == temp).replys = [...this.questions.find(element => element == temp).replys, data.data];
                 }
             );   
 
