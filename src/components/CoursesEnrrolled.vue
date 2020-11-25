@@ -74,7 +74,7 @@
                             <transition-group name="dynamic-box" tag="div">
                                 <div v-for="ans of col.replys" :key="ans.id" class="p-col">
                                     <div class="p-shadow-7 p-text-left" style="margin-left:auto; margin-right:0; width: 95%">
-                                        <strong>{{ans.user}}</strong><br/>{{ans.reply}}
+                                        <strong>{{ans.personAnswering.name}}</strong><br/>{{ans.text}}
                                     </div>
                                 </div>
                             </transition-group>
@@ -153,25 +153,23 @@ export default {
             this.displayLessons = false;
             this.lesson = lesson;
             this.posLesson = this.lessons.findIndex(element=> element==lesson);
+            this.getQuestions();            
             this.displayLesson = true;
-            this.qService.getQuestions(this.lesson.id).then(
-                data => {                    
-                    console.log(data.data);
-                    this.questions = data.data;
-                }
-            );
+            console.log(this.questions);
             setTimeout(() => document.getElementById('description').innerHTML = this.lesson.description, 0);
             
         },
         next: function(){
             this.posLesson += 1;            
             this.lesson = this.lessons[this.posLesson]; 
-            document.getElementById('description').innerHTML = this.lesson.description;           
+            document.getElementById('description').innerHTML = this.lesson.description; 
+            this.getQuestions(); 
         },
         previous: function(){
             this.posLesson -= 1;
             this.lesson = this.lessons[this.posLesson];
-            document.getElementById('description').innerHTML = this.lesson.description;  
+            document.getElementById('description').innerHTML = this.lesson.description; 
+            this.getQuestions(); 
         },
         boton: function(usuario){
             console.log(usuario)
@@ -183,19 +181,42 @@ export default {
         reply: function(){
             this.replyDialog.userId = localStorage.getItem('id');
             this.replyDialog.questionId = this.question.id;
-            this.qService.postReply(this.replyDialog);
-        },
-        publish: function(){
-            this.question.id = this.questions.length;
-            this.question.user = this.questions.length;
-            this.questions = [...this.questions,this.question]; 
-            this.qService.postQuestion(this.question, this.lesson.id).then(
-                data => {
-                    console.log(data)
+            var temp = this.question
+            this.qService.postReply(this.replyDialog).then(
+                data=>{   
+                    var n = this.questions.findIndex(element => element == temp);                
+                    console.log(this.questions.find(element == temp));
                 }
             );   
+
+            this.displayReply = false;
+            this.replyDialog = {};
             this.question = {};
+        },
+        publish: function(){
+            this.qService.postQuestion(this.question, this.lesson.id).then(
+                data => {
+                    console.log(data.data);
+                    this.questions = [...this.questions,data.data];
+                }
+            );
+        },
+        getQuestions: function(){
+            this.qService.getQuestions(this.lesson.id).then(
+                data => { 
+                    data.data.forEach(element =>{
+                        this.qService.getReplys(element.id).then(
+                            replys=>{
+                                element.replys = replys.data;
+                            }
+                        );
+                    });
+                    setTimeout(() => this.questions = data.data, 200);
+                    
+                }
+            );
         }
+
     }
 }
 </script>
