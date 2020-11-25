@@ -6,17 +6,15 @@
     <div>
         <Menubar >
             <template #end :style="{'margin':auto}">
+                Filtro:
+                <Dropdown v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search" />
                     <InputText  type="text" v-model="entrada" />                    
                 </span>   
                 <Button label="Buscar"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
             </template>
-        </Menubar>
-        <br>
-        <h4>Filtrar</h4>
-        <Dropdown v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area" @change="searchBranch()" class="p-mr-2 p-mb-2"/>
-        <Dropdown v-model="selectedBranch" :options="branch" optionLabel="title" placeholder="Rama" class="p-mr-2"/>   
+        </Menubar>   
     </div>
     <div style="margin:0 auto; width: 80%" >
         <br>
@@ -158,10 +156,10 @@ import KBService from '../service/KBService'
                 
             },
             buscarSubcadena(){
-                if (this.entrada != null && this.entrada != ""){
-                this.varSearchService.getByWord(this.entrada).then(data => {
-                    this.curso = data.data;           
-                });
+                if (this.entrada != null && this.entrada != "" && this.selectedArea != null){
+                    this.varSearchService.getByWord(this.entrada, this.selectedArea.id).then(data => {
+                        this.curso = data.data;           
+                    });
                 }
                 else {
                     this.getAllCourses();

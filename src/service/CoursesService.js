@@ -27,8 +27,8 @@ export default class UserService {
     getByBranch(id){
         return axios.get(this.url+"/getByBranch/"+id)
     }
-    getByWord(subcadena){
-        return axios.get(this.url+"/getByWord/"+subcadena)
+    getByWord(subcadena,id){
+        return axios.get(this.url+"/getByWord/"+subcadena+'/'+id)
     }
     getCourseById(id){
         return axios.get(this.url+"/getCourseById/"+id)
