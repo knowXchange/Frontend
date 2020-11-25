@@ -187,12 +187,12 @@ import KBService from '../service/KBService'
                     .then(data=>{
                         console.log(data);
                         if (data.status === 200){
-                            this.message.title = 'Insccripcion Exitosa';
+                            this.message.title = 'Inscripcion Exitosa';
                             this.message.content = 'La inscripcion al curso fue exitosa, podras encontrar el curso en tu perfil >> cursos >> cursos inscritos'
                             this.message.display=true;
                         }
                         else{
-                            this.message.title = 'Insccripcion Fallida';
+                            this.message.title = 'Inscripcion Fallida';
                             this.message.content = 'La inscripcion al curso no fue exitosa';
                             this.message.display=true;
                         }

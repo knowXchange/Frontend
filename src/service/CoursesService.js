@@ -74,4 +74,7 @@ export default class UserService {
     getCourse(id){
         return axios.get(this.url+"getById/"+id)
     }
+    getEnrrolled(id){
+        return axios.get(this.url+"getCoursesEnrrolled/"+id)
+    }
 }
