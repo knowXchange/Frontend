@@ -7,7 +7,7 @@
         <Menubar >
             <template #end :style="{'margin':auto}">
                 Filtro:
-                <Dropdown v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
+                <Dropdown @change ="buscarRama" v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search" />
                     <InputText  type="text" v-model="entrada" />                    
@@ -149,15 +149,15 @@ import KBService from '../service/KBService'
                     this.curso = data.data;
                 });
             },
-            buscarRama(numero){
-                this.varSearchService.getByBranch(numero).then(data => {
+            buscarRama(){
+                this.varSearchService.getByBranch(this.selectedArea.id).then(data => {
                     this.curso = data.data;           
                 });
                 
             },
             buscarSubcadena(){
-                if (this.entrada != null && this.entrada != "" && this.selectedArea != null){
-                    this.varSearchService.getByWord(this.entrada, this.selectedArea.id).then(data => {
+                if (this.entrada != null){
+                        this.varSearchService.getByWord(this.entrada).then(data => {
                         this.curso = data.data;           
                     });
                 }
