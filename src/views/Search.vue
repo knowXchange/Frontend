@@ -4,15 +4,17 @@
         <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> <router-link to="/"> KnowXChange </router-link>  </h1>
     </div>
     <div>
-        <Menubar :model="items">
-            <template #end>
+        <Menubar >
+            <template #end :style="{'margin':auto}">
+                Filtro:
+                <Dropdown @change ="buscarRama" v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search" />
                     <InputText  type="text" v-model="entrada" />                    
                 </span>   
                 <Button label="Buscar"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
             </template>
-        </Menubar>
+        </Menubar>   
     </div>
     <div style="margin:0 auto; width: 80%" >
         <br>
@@ -56,18 +58,23 @@
 import SearchService from '../service/CoursesService';
 import topbar from '../components/topbar' 
 import UserService from '../service/UserService' 
-    
+import KBService from '../service/KBService'   
     export default {
     
         name: 'Search',
         varSearchService : null,
         userService: null,
+        kbService: null,
         components: {
             topbar
         },  
 
         data() {        
-            return {   
+            return {
+            selectedArea: null,
+            area:[],
+            selectedBranch: null,
+            branch: [],       
             cursosRama: null,         
             curso: null,
             course: {},
@@ -120,27 +127,39 @@ import UserService from '../service/UserService'
         created() {
             this.varSearchService = new SearchService(); 
             this.userService = new UserService();
+            this.kbService = new KBService();
         },
         mounted(){
             this.getAllCourses();
+            this.kbService.getAllK().then(data => {
+                this.area = data.data;
+            })
+            this.kbService.getBbyK().then(data=>{
+                 this.branch = data.data;
+            })
         },
         methods:{
+            searchBranch: function(){
+                this.kbService.getBbyK(this.selectedArea.title).then(data=>{
+                    this.branch = data.data;
+                });
+            },
             getAllCourses(){
                 this.varSearchService.getAllCourses().then(data => {
                     this.curso = data.data;
                 });
             },
-            buscarRama(numero){
-                this.varSearchService.getByBranch(numero).then(data => {
+            buscarRama(){
+                this.varSearchService.getByBranch(this.selectedArea.id).then(data => {
                     this.curso = data.data;           
                 });
                 
             },
             buscarSubcadena(){
-                if (this.entrada != null && this.entrada != ""){
-                this.varSearchService.getByWord(this.entrada).then(data => {
-                    this.curso = data.data;           
-                });
+                if (this.entrada != null){
+                        this.varSearchService.getByWord(this.entrada).then(data => {
+                        this.curso = data.data;           
+                    });
                 }
                 else {
                     this.getAllCourses();
@@ -168,12 +187,12 @@ import UserService from '../service/UserService'
                     .then(data=>{
                         console.log(data);
                         if (data.status === 200){
-                            this.message.title = 'Insccripcion Exitosa';
+                            this.message.title = 'Inscripcion Exitosa';
                             this.message.content = 'La inscripcion al curso fue exitosa, podras encontrar el curso en tu perfil >> cursos >> cursos inscritos'
                             this.message.display=true;
                         }
                         else{
-                            this.message.title = 'Insccripcion Fallida';
+                            this.message.title = 'Inscripcion Fallida';
                             this.message.content = 'La inscripcion al curso no fue exitosa';
                             this.message.display=true;
                         }

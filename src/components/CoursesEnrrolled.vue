@@ -3,7 +3,7 @@
         <div>
         </div>
         <div style="margin: 0 auto; width: 80%">
-            <DataTable :value="courses" :selection="courseSelection" dataKey="id" :paginator="true" :rows="10">
+            <DataTable :value="courses" :paginator="true" :rows="10">
                 <Column field="title" header="Curso"></Column>
                 <Column :exportable="false">                
                     <template #body="slotProps">
@@ -13,7 +13,7 @@
             </DataTable>
         </div>
         <Dialog :visible.sync="displayLessons" :header.sync="course.title" :modal="true" :style="{width: '80vw'}">
-            <DataTable ref="dt" :value="lessons" :selection.sync="lessonSelection" dataKey="id" :paginator="true" :rows="10">
+            <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">
                 <Column field="title" header="Lecciones"></Column>
                 <Column :exportable="false">
                     <template  #body="slotProps">
@@ -26,8 +26,8 @@
             :visible.sync="displayLesson" 
             :header.sync="course.title" 
             :modal="true" 
-            :maximizable="true" 
-            :style="{width: '100vw'}">
+            :maximizable="true"
+            :style="{width: '100%'}">
             <div class="p-grid p-jc-between">
                 <div class="p-col-2">
                     <Button 
@@ -53,14 +53,46 @@
             <div id="description" class="p-text-left">
                 Descripcion.
             </div>
-            <div>
-                Comentarios preguntas y/o respuestas de la leccion
+            <div class="p-mb-2 p-text-left">
+                <strong> Zona de Preguntas</strong>
+            </div>
+            <div class="p-text-left">
+                <InputText v-model="question.topic" id="topic" placeholder="Asunto" class="p-mb-2"/>
+                <Textarea v-model="question.title" placeholder="Cual es tu pregunta?" rows="3" cols="30" style="width: 95%"/>
+                <Button label='Publicar' class="p-button-rounded  p-button-success" @click="publish()"/>
+            </div>
+            <div style="margin-top: .5em">
+                <transition-group name="dynamic-box" tag="div" class="p-jc-end">
+                    <div v-for="col of questions" :key="col.id" class="p-col p-jc-end">
+                        <div class="p-shadow-9 p-text-left p-mb-2">
+                            <strong>{{col.asking_user.name}}</strong><br/>{{col.text}}<br/>
+                        </div>  
+                        <div style="margin-right:0;">                     
+                            <Button label='Responder' class="p-button-rounded  p-button-success" @click="openReply(col)"/>  
+                        </div>                        
+                        <div style="margin-top: .5em">
+                            <transition-group name="dynamic-box" tag="div">
+                                <div v-for="ans of col.replys" :key="ans.id" class="p-col">
+                                    <div class="p-shadow-7 p-text-left" style="margin-left:auto; margin-right:0; width: 95%">
+                                        <strong>{{ans.personAnswering.name}}</strong><br/>{{ans.text}}
+                                    </div>
+                                </div>
+                            </transition-group>
+                        </div>
+                    </div>
+                </transition-group>
             </div>              
+        </Dialog>
+        <Dialog :visible.sync="displayReply" :header.sync="question.topic" :modal="true" :style="{width: '80vw'}">
+            {{question.text}}            
+            <Textarea v-model="replyDialog.text" placeholder="Cual es tu respuesta" rows="3" cols="30" style="width: 95%"/>
+            <Button label='Publicar' class="p-button-rounded  p-button-success" @click="reply()"/>
         </Dialog>
     </div>   
 </template>
 <script>   
 import CoursesService from '../service/CoursesService' 
+import QuestionService from '../service/QuestionService'
 export default {
     name: 'CoursesEnrroled',
     data(){
@@ -73,16 +105,36 @@ export default {
             lesson:{},
             displayLesson: false,
             displayLessons: false,
+            displayReply: false,
             posLesson: 0,
+            pText: null,
+            question: {},
+            replyDialog:{
+                text: null,
+            },
+            questions:[
+                {
+                    id: 0,
+                    asking_user: {
+                        name: ""
+                    },
+                    topic: "",
+                    text: "",
+                    replys:[]
+                }
+
+            ]
         }
     },
     kbService: null,
     coursesService: null,
+    qService: null,
     created(){
         this.coursesService = new CoursesService();
+        this.qService = new QuestionService();
     },
     mounted(){        
-        this.coursesService.getCreated().then(
+        this.coursesService.getEnrrolled(localStorage.getItem('id')).then(
             data=>{
                 this.courses = data.data;
             }
@@ -90,9 +142,9 @@ export default {
     },
     methods:{
         showLessons: function(course){
-            this.course = course;
-            this.course.title = 'Curso: ' + this.course.title;  
+            this.course = course; 
             this.coursesService.getLessons(course.id).then(data=>{
+                console.log(data.data)
                 this.lessons = data.data
             });
             this.displayLessons = true;
@@ -101,23 +153,71 @@ export default {
             this.displayLessons = false;
             this.lesson = lesson;
             this.posLesson = this.lessons.findIndex(element=> element==lesson);
+            this.getQuestions();            
             this.displayLesson = true;
+            console.log(this.questions);
             setTimeout(() => document.getElementById('description').innerHTML = this.lesson.description, 0);
             
         },
         next: function(){
             this.posLesson += 1;            
             this.lesson = this.lessons[this.posLesson]; 
-            document.getElementById('description').innerHTML = this.lesson.description;           
+            document.getElementById('description').innerHTML = this.lesson.description; 
+            this.getQuestions(); 
         },
         previous: function(){
             this.posLesson -= 1;
             this.lesson = this.lessons[this.posLesson];
-            document.getElementById('description').innerHTML = this.lesson.description;  
+            document.getElementById('description').innerHTML = this.lesson.description; 
+            this.getQuestions(); 
+        },
+        boton: function(usuario){
+            console.log(usuario)
+        },
+        openReply: function(question){
+            this.question = question;
+            this.displayReply = true;          
+        },
+        reply: function(){
+            this.replyDialog.userId = localStorage.getItem('id');
+            this.replyDialog.questionId = this.question.id;
+            var temp = this.question
+            this.qService.postReply(this.replyDialog).then(
+                data=>{   
+                    if(this.questions.find(element => element == temp).replys == null)
+                        this.questions.find(element => element == temp).replys = [data.data];
+                    else this.questions.find(element => element == temp).replys = [...this.questions.find(element => element == temp).replys, data.data];
+                }
+            );   
+
+            this.displayReply = false;
+            this.replyDialog = {};
+            this.question = {};
+        },
+        publish: function(){
+            this.qService.postQuestion(this.question, this.lesson.id).then(
+                data => {
+                    console.log(data.data);
+                    this.questions = [...this.questions,data.data];
+                }
+            );
+        },
+        getQuestions: function(){
+            this.qService.getQuestions(this.lesson.id).then(
+                data => { 
+                    data.data.forEach(element =>{
+                        this.qService.getReplys(element.id).then(
+                            replys=>{
+                                element.replys = replys.data;
+                            }
+                        );
+                    });
+                    setTimeout(() => this.questions = data.data, 200);
+                    
+                }
+            );
         }
 
-
     }
-
 }
 </script>

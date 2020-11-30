@@ -6,11 +6,6 @@
             <router-link to="/"> KnowXChange </router-link>        
         </div>
         <div class="p-col-2">
-            <Button 
-            icon="pi pi-chevron-right" 
-            :label.sync="labelButton" 
-            class="p-button-link" 
-            iconPos="right"/>
         </div>        
     </div>    
 </template>

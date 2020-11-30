@@ -28,7 +28,7 @@ export default class UserService {
         return axios.get(this.url+"/getByBranch/"+id)
     }
     getByWord(subcadena){
-        return axios.get(this.url+"/getByWord/"+subcadena)
+        return axios.get(this.url+"getByWord/"+subcadena)
     }
     getCourseById(id){
         return axios.get(this.url+"/getCourseById/"+id)
@@ -73,5 +73,8 @@ export default class UserService {
     }
     getCourse(id){
         return axios.get(this.url+"getById/"+id)
+    }
+    getEnrrolled(id){
+        return axios.get(this.url+"getCoursesEnrrolled/"+id)
     }
 }
