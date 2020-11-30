@@ -1,8 +1,7 @@
 <template>
-    <div>
-        <div>
-        </div>
-        <div style="margin: 0 auto; width: 80%">
+    <div class="p-mb-4">
+        <br class="p-mb-4"/>
+        <div style="margin: 0 auto; width: 80%" class="p-mb-4"> 
             <DataTable :value="courses" :paginator="true" :rows="10">
                 <Column field="title" header="Curso"></Column>
                 <Column :exportable="false">                
@@ -81,7 +80,7 @@
                         </div>
                     </div>
                 </transition-group>
-            </div>              
+            </div>         
         </Dialog>
         <Dialog :visible.sync="displayReply" :header.sync="question.topic" :modal="true" :style="{width: '80vw'}">
             {{question.text}}            
@@ -94,7 +93,7 @@
 import CoursesService from '../service/CoursesService' 
 import QuestionService from '../service/QuestionService'
 export default {
-    name: 'CoursesEnrroled',
+    name: 'CoursesEnrrolled',
     data(){
         return{
             courseSelection: null,
@@ -221,3 +220,5 @@ export default {
     }
 }
 </script>
+<style>
+</style>

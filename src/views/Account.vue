@@ -1,8 +1,8 @@
 <template>
-    <div>
-    <topbar/>
-    <TabMenu :model="items" />      
-    <router-view/>
+    <div> 
+        <topbar/>
+        <TabMenu :model="items"/>
+        <router-view/>
     </div>
 </template>
 <script>
@@ -15,15 +15,15 @@ export default {
     },
     data(){
         return {
-                items: [
-                    {label: 'Mi Perfil', icon: 'pi pi-fw pi-user', to: '/account/my-info'},
-                    {label: 'Cursos', icon: 'pi pi-fw pi-folder', to: '/account/my-courses'},
-                ]
-            }
+            items: [
+                {label: 'Mi Perfil', icon: 'pi pi-fw pi-user', to: '/account/my-info'},
+                {label: 'Cursos Inscritos', icon: 'pi pi-fw pi-folder', to: '/account/courses-enrrolled'},
+                {label: 'Cursos Creados', icon: 'pi pi-fw pi-folder', to: '/account/courses-created'},
+            ]
+        }
     }
     
 }
 </script>
 <style>
-
 </style>
