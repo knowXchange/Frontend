@@ -5,7 +5,7 @@
     </div>
     <div>
         <Menubar >
-            <template #end :style="{'margin':auto}">
+            <template #start :style="{'margin':auto}">
                 Filtro:
                 <Dropdown @change ="buscarRama" v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
                 <span class="p-input-icon-left">
@@ -13,6 +13,12 @@
                     <InputText  type="text" v-model="entrada" />                    
                 </span>   
                 <Button label="Buscar"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
+            </template>
+            <template #end :style="{'margin':auto}">
+                <!-- Boton de inicio de sesión -->
+                    <Button :label.sync="buttonLabelA" style="background:#f8f9fa;" class="p-button-outlined p-button-success p-mr-2" @click="actionA()"/>
+                <!-- Boton para registrarse o cerrar sesion -->
+                    <Button :label.sync="buttonLabelB" style="background:#f8f9fa;" class="p-button-outlined p-button-success" @click="actionB()"/>
             </template>
         </Menubar>   
     </div>
@@ -119,7 +125,9 @@ import KBService from '../service/KBService'
 
                      ]
                 }
-                ]
+            ],
+            buttonLabelA: "",
+            buttonLabelB: "",
             }       
              
         }, 
@@ -128,6 +136,17 @@ import KBService from '../service/KBService'
             this.varSearchService = new SearchService(); 
             this.userService = new UserService();
             this.kbService = new KBService();
+            if(localStorage.getItem('id')==0){
+                this.buttonLabelA = "Iniciar Sesion";
+                this.buttonLabelB = "Registrarse";
+            }
+            else{
+                this.userService.getUser(localStorage.getItem('id')).then(data => {
+                    console.log(data),
+                    this.buttonLabelA = "Perfil de "+ data.data.name
+                });
+                this.buttonLabelB = "Cerrar Sesion";         
+            }
         },
         mounted(){
             this.getAllCourses();
@@ -139,6 +158,20 @@ import KBService from '../service/KBService'
             })
         },
         methods:{
+            actionA: function(){
+                if(localStorage.getItem('id')==0){
+                    this.$router.push('login')
+                }else this.$router.push('account/my-info')
+            },
+            actionB: function(){
+                if(localStorage.getItem('id')==0){
+                    this.$router.push('register')
+                }
+                else{
+                    localStorage.setItem('id',0);
+                    location.reload();
+                }
+            },
             searchBranch: function(){
                 this.kbService.getBbyK(this.selectedArea.title).then(data=>{
                     this.branch = data.data;

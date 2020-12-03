@@ -12,6 +12,7 @@ export default {
                 items: [
                     {label: 'Cursos Inscritos', icon: 'pi pi-fw pi-folder', to: '/account/my-courses/courses-enrrolled'},
                     {label: 'Cursos Creados', icon: 'pi pi-fw pi-folder', to: '/account/my-courses/courses-created'},
+                    {label: 'Buscar Curso', icon: 'pi pi-fw pi-search', to: '/search'}
                 ]
             }
     }

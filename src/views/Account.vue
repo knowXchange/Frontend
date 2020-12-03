@@ -1,7 +1,7 @@
 <template>
     <div>
     <topbar/>
-    <TabMenu :model="items" />      
+    <Menubar :model="items" />      
     <router-view/>
     </div>
 </template>
@@ -15,11 +15,41 @@ export default {
     },
     data(){
         return {
-                items: [
-                    {label: 'Mi Perfil', icon: 'pi pi-fw pi-user', to: '/account/my-info'},
-                    {label: 'Cursos', icon: 'pi pi-fw pi-folder', to: '/account/my-courses'},
-                ]
-            }
+            items: [
+                {
+                   label:'Home',
+                   icon:'pi pi-fw pi-home',
+                   to: "/",
+                },
+                {
+                   label:'Usuario',
+                   icon:'pi pi-fw pi-user',
+                   items:[
+                      {
+                         label:'Mis cursos',
+                         icon:'pi pi-fw pi-star-o',
+                         to: "/account/my-courses"
+
+                      },
+                      {
+                         label:'Editar Info',
+                         icon:'pi pi-fw pi-user-edit',
+                         to: "/account/my-info"
+                      },
+                      {
+                         label:'Buscar curso',
+                         icon:'pi pi-fw pi-search',
+                         to: "/search"
+                      },
+                   ]
+                },
+                {
+                   label:'Cerrar Sesión',
+                   icon:'pi pi-fw pi-sign-out',
+                   to: "/login"
+                }
+             ]
+        }
     }
     
 }
