@@ -1,40 +1,34 @@
 <template>
-<div>
-    <div style=" background-color:#adebad; width:auto; height:100px">
-        <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> <router-link to="/"> KnowXChange </router-link>  </h1>
-    </div>
-    <div>
-        <Menubar >
-            <template #start :style="{'margin':auto}">
-                Filtro:
-                <Dropdown @change ="buscarRama" v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
-                <span class="p-input-icon-left">
-                    <i class="pi pi-search" />
-                    <InputText  type="text" v-model="entrada" />                    
-                </span>   
-                <Button label="Buscar"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
-            </template>
-            <template #end :style="{'margin':auto}">
-                <!-- Boton de inicio de sesión -->
-                    <Button :label.sync="buttonLabelA" style="background:#f8f9fa;" class="p-button-outlined p-button-success p-mr-2" @click="actionA()"/>
-                <!-- Boton para registrarse o cerrar sesion -->
-                    <Button :label.sync="buttonLabelB" style="background:#f8f9fa;" class="p-button-outlined p-button-success" @click="actionB()"/>
-            </template>
-        </Menubar>   
-    </div>
-    <div style="margin:0 auto; width: 80%" >
-        <br>
-        <DataTable :value="curso" :paginator="true" :rows="3" :selection.sync="idCursoSeleccion" dataKey="id">           
-            
-            <Column field="title" header="Nombre del curso"></Column>
-            <Column field="description" header="Descripción del curso"></Column>
-            <Column :exportable="false">
-                <template  #body="slotProps">
-                    <Button label="Ver curso" icon="pi pi-external-link" @click="openMaximizable(slotProps.data)" />
+    <div style="background-color: rgb(230, 230, 230);">
+        <div style=" background-color:#adebad; width:auto; height:100px">
+            <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> <router-link to="/"> KnowXChange </router-link>  </h1>
+        </div>
+        <div>
+            <Menubar >
+                <template #end :style="{'margin':auto}">
+                    Filtro:
+                    <Dropdown @change ="buscarRama" v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText  type="text" v-model="entrada" />                    
+                    </span>   
+                    <Button label="Buscar"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
                 </template>
-            </Column>
-                   
-        </DataTable>           
+            </Menubar>   
+        </div>
+        <div style="margin:0 auto; width: 80%" >
+            <br>
+            <DataTable :value="curso" :paginator="true" :rows="3" :selection.sync="idCursoSeleccion" dataKey="id">           
+                
+                <Column field="title" header="Nombre del curso"></Column>
+                <Column field="description" header="Descripción del curso"></Column>
+                <Column :exportable="false">
+                    <template  #body="slotProps">
+                        <Button label="Ver curso" icon="pi pi-external-link" @click="openMaximizable(slotProps.data)" />
+                    </template>
+                </Column>
+                    
+            </DataTable>
             
             <Dialog :header.sync="course.title" :visible.sync="displayMaximizable" :style="{width: '50vw'}" :maximizable="true" :modal="true">
                 <p class="p-m-0"></p>
@@ -125,9 +119,7 @@ import KBService from '../service/KBService'
 
                      ]
                 }
-            ],
-            buttonLabelA: "",
-            buttonLabelB: "",
+                ]
             }       
              
         }, 
@@ -136,17 +128,6 @@ import KBService from '../service/KBService'
             this.varSearchService = new SearchService(); 
             this.userService = new UserService();
             this.kbService = new KBService();
-            if(localStorage.getItem('id')==0){
-                this.buttonLabelA = "Iniciar Sesion";
-                this.buttonLabelB = "Registrarse";
-            }
-            else{
-                this.userService.getUser(localStorage.getItem('id')).then(data => {
-                    console.log(data),
-                    this.buttonLabelA = "Perfil de "+ data.data.name
-                });
-                this.buttonLabelB = "Cerrar Sesion";         
-            }
         },
         mounted(){
             this.getAllCourses();
@@ -158,20 +139,6 @@ import KBService from '../service/KBService'
             })
         },
         methods:{
-            actionA: function(){
-                if(localStorage.getItem('id')==0){
-                    this.$router.push('login')
-                }else this.$router.push('account/my-info')
-            },
-            actionB: function(){
-                if(localStorage.getItem('id')==0){
-                    this.$router.push('register')
-                }
-                else{
-                    localStorage.setItem('id',0);
-                    location.reload();
-                }
-            },
             searchBranch: function(){
                 this.kbService.getBbyK(this.selectedArea.title).then(data=>{
                     this.branch = data.data;
