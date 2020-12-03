@@ -6,19 +6,56 @@
         </div>
     <Navbar/>
     <br>
-    <Carousel :value="courses" :numVisible="2" :numScroll="1">
-          <template #item="slotProps">
-            <div>
-                {{slotProps.data.title}}
-            </div>
-            <div>
-                {{slotProps.data.description}}
-            </div>
-            <div>
-                {{slotProps.data.puntuacion}}
-            </div>
+    
+
+        <div class="card">
+        <Carousel :value="courses" :numVisible="1" :numScroll="1" :responsiveOptions="responsiveOptions">
+           
+           <template #item="slotProps">
+               <div class="product-item">
+                  <div class="product-item-content">
+                      <div class="p-mb-3">
+                         <img :src="'demo/images/product/' + slotProps.data.image" :alt="slotProps.data.name" class="product-image" />
+                      </div>
+                      <div>
+                          <h4 class="p-mb-1">{{slotProps.data.title}}</h4>
+                          <h6 class="p-mt-0 p-mb-3">{{slotProps.data.description}}</h6>
+                          
+                          <div class="car-buttons p-mt-5">
+                             
+                              <Button icon="pi pi-search" class="p-button p-button-rounded p-mr-2" @click="openMaximizable(slotProps.data)" />
+                              <Button icon="pi pi-star" class="p-button-success p-button-rounded p-mr-2" />
+                              <Button icon="pi pi-cog" class="p-button-help p-button-rounded" />
+                            
+                          </div>
+                      </div>
+                  </div>
+              </div>
           </template>
         </Carousel>
+        <Dialog :header.sync="course.title" :visible.sync="displayMaximizable" :style="{width: '50vw'}" :maximizable="true" :modal="true">
+                <p class="p-m-0"></p>
+                <div class="p-text-left">
+                    <h5>Descripcion del curso</h5>
+                    {{course.description}}
+                </div>  
+                <div>
+                    <h5>Cantidad de Clases: {{lessons.length}}</h5>
+                    <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">                
+                        <Column field="title" header="Titulo"></Column>  
+                    </DataTable> 
+                </div> 
+                
+                <template #footer>
+                    <Button label="Volver" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
+                    <Button label="Inscribirse" icon="pi pi-check" @click="inscribir()" autofocus />
+                </template>
+                 
+            </Dialog>
+             <Dialog :header.sync="message.title" :visible.sync="message.display" :style="{width: '50vw'}" :modal="true">
+                {{message.content}}
+            </Dialog>
+        </div>
     <router-view/>
   </div>
 </template>
@@ -26,6 +63,11 @@
 <script>
 // @ is an alias to /src
 import Navbar from '@/components/Navbar.vue'
+import SearchService from '../service/CoursesService' 
+import UserService from '../service/UserService' 
+import KBService from '../service/KBService'
+
+
 export default {
   name: 'Home',
   components: {
@@ -33,22 +75,66 @@ export default {
   },
   data(){
       return{
-          courses: [
-                {
-                    id:0,
-                    title: "titulo",
-                    description: "Descripcion",
-                    puntuacion: 4
-                },
-                {
-                    id:1,
-                    title: "titulo2",
-                    description: "Descripcion2",
-                    puntuacion: 3
-                }
-            ]
+          message: {
+                title:'',
+                display: false,
+                content: '',
+            },
+          lessons:[],
+          displayMaximizable: false,
+          course: {},
+          curso: null,
+          courses: []
       }
-  }  
+  },
+    created() {
+        this.varSearchService = new SearchService();
+        this.userService = new UserService();
+        this.kbService = new KBService();
+    },
+    mounted(){
+        
+        this.kbService.getAllK().then(data => {
+            this.area = data.data;
+        })
+        this.kbService.getBbyK().then(data=>{
+             this.branch = data.data;
+        })
+        this.varSearchService.getCourseRandom(10).then(data=>{
+            this.courses = data.data;
+        })
+
+    }, 
+    methods:{
+    openMaximizable(course) {
+                this.course = course;
+                this.varSearchService.getLessons(course.id).then(data=>{
+                    this.lessons = data.data
+                });
+                this.displayMaximizable = true;                
+    },
+    closeMaximizable() {
+                this.displayMaximizable = false;
+                
+    },
+    inscribir: function(){
+                if(localStorage.getItem('id')!=0)
+                    this.userService.registerCourse(localStorage.getItem('id'),this.course.id)
+                    .then(data=>{
+                        console.log(data);
+                        if (data.status === 200){
+                            this.message.title = 'Inscripcion Exitosa';
+                            this.message.content = 'La inscripcion al curso fue exitosa, podras encontrar el curso en tu perfil >> cursos >> cursos inscritos'
+                            this.message.display=true;
+                        }
+                        else{
+                            this.message.title = 'Inscripcion Fallida';
+                            this.message.content = 'La inscripcion al curso no fue exitosa';
+                            this.message.display=true;
+                        }
+                    });          
+            }
+    } 
 }
 </script>
 

@@ -19,6 +19,8 @@ import Toolbar from 'primevue/toolbar'
 import Menubar from 'primevue/menubar';
 import Editor from 'primevue/editor';
 import Carousel from 'primevue/carousel';
+import Rating from 'primevue/rating';
+
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -34,6 +36,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 
 Vue.config.productionTip = false
+Vue.component('Rating', Rating);
 Vue.component('InputText', InputText);
 Vue.component('Password', Password);
 Vue.component('Button', Button);

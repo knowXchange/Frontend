@@ -77,4 +77,7 @@ export default class UserService {
     getEnrrolled(id){
         return axios.get(this.url+"getCoursesEnrrolled/"+id)
     }
+    getCourseRandom(cursos_aleatorios){
+        return axios.get(this.url+"getRandomCoursesByPathVariable/"+cursos_aleatorios)
+    }
 }

@@ -40,7 +40,9 @@
                     <h5>Cantidad de Clases: {{lessons.length}}</h5>
                     <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">                
                         <Column field="title" header="Titulo"></Column>  
-                    </DataTable> 
+                    </DataTable>
+                                    
+
                 </div>  
                 <template #footer>
                     <Button label="Volver" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
@@ -58,7 +60,8 @@
 import SearchService from '../service/CoursesService';
 import topbar from '../components/topbar' 
 import UserService from '../service/UserService' 
-import KBService from '../service/KBService'   
+import KBService from '../service/KBService'
+  
     export default {
     
         name: 'Search',
@@ -71,6 +74,7 @@ import KBService from '../service/KBService'
 
         data() {        
             return {
+            
             selectedArea: null,
             area:[],
             selectedBranch: null,
@@ -128,6 +132,7 @@ import KBService from '../service/KBService'
             this.varSearchService = new SearchService(); 
             this.userService = new UserService();
             this.kbService = new KBService();
+            
         },
         mounted(){
             this.getAllCourses();
@@ -139,6 +144,7 @@ import KBService from '../service/KBService'
             })
         },
         methods:{
+          
             searchBranch: function(){
                 this.kbService.getBbyK(this.selectedArea.title).then(data=>{
                     this.branch = data.data;

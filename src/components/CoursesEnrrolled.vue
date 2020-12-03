@@ -7,6 +7,7 @@
                 <Column :exportable="false">                
                     <template #body="slotProps">
                         <Button label="Ver Lecciones" class="p-button-raised p-button-text" @click="showLessons(slotProps.data)"/>
+                        <Button label="Calificar Curso" class="p-button-raised p-button-text" @click="showReseñas(slotProps.data)"/>
                     </template>
                 </Column>
             </DataTable>
@@ -20,6 +21,14 @@
                     </template>
                 </Column>
             </DataTable>
+        </Dialog>
+        <Dialog :visible.sync="displayReseñas" :header.sync="course.title" :modal="true" :style="{width: '80vw'}">
+            <h3>Calificación {{grade}}</h3>
+                <Rating v-model="grade" :cancel="false"/>
+                <div class="p-text-left">
+                     <Textarea v-model="reseñas.text" placeholder="Dejanos tu opinión respecto al curso" rows="3" cols="30" style="width: 95%"/>
+                     <Button label='Publicar' class="p-button-rounded  p-button-success" @click="publishReseña()"/>
+                </div>
         </Dialog>
         <Dialog  
             :visible.sync="displayLesson" 
@@ -92,16 +101,20 @@
 <script>   
 import CoursesService from '../service/CoursesService' 
 import QuestionService from '../service/QuestionService'
+import RService from '../service/ReviewService' 
 export default {
     name: 'CoursesEnrrolled',
     data(){
         return{
+            reseñas:{},
+            grade: null,
             courseSelection: null,
             lessonSelection: null,
             courses: [],
             lessons:[],
             course:{},
             lesson:{},
+            displayReseñas: false,
             displayLesson: false,
             displayLessons: false,
             displayReply: false,
@@ -131,6 +144,7 @@ export default {
     created(){
         this.coursesService = new CoursesService();
         this.qService = new QuestionService();
+        this.RService = new RService();
     },
     mounted(){        
         this.coursesService.getEnrrolled(localStorage.getItem('id')).then(
@@ -140,6 +154,22 @@ export default {
         );
     },
     methods:{
+        publishReseña: function(){
+            this.RService.postReseñas(this.reseñas.text, this.course.id, this.grade).then(
+                data => {
+                    console.log(data.data);
+                    
+                }
+                );
+            },
+        showReseñas: function(course){
+            this.course = course; 
+            this.coursesService.getLessons(course.id).then(data=>{
+                console.log(data.data)
+                this.lessons = data.data
+            });
+            this.displayReseñas = true;
+        },
         showLessons: function(course){
             this.course = course; 
             this.coursesService.getLessons(course.id).then(data=>{
@@ -147,6 +177,16 @@ export default {
                 this.lessons = data.data
             });
             this.displayLessons = true;
+        },
+        openReseña: function(lesson){                         
+            this.displayLessons = false;
+            this.lesson = lesson;
+            this.posLesson = this.lessons.findIndex(element=> element==lesson);
+            this.getQuestions();            
+            this.displayReseñas = true;
+            console.log(this.questions);
+            setTimeout(() => document.getElementById('description').innerHTML = this.lesson.description, 0);
+            
         },
         openLesson: function(lesson){                         
             this.displayLessons = false;
