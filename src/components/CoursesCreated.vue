@@ -1,15 +1,12 @@
 <template>
-    <div>
-        <div>
-        </div>
+    <div class="p-mb-4">
+        <br class="p-mb-4"/>
         <div style="margin: 0 auto; width: 80%">
             <Toolbar class="p-mb-4">
                 <template slot="left">
-                    <Button label="Crear" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreate()" />
-                    
+                    <Button label="Crear" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openCreate()" />                    
                 </template>
-            </Toolbar>
-            
+            </Toolbar>            
             <DataTable ref="dt" :value="courses" :selection.sync="courseSelection" dataKey="id" :paginator="true" :rows="10">
                 
                 <Column field="id" header="ID"></Column>
@@ -23,55 +20,68 @@
                 </Column>
             </DataTable>
             <Dialog :visible.sync="displayCreate" header="Crear Curso" :modal="true" :style="{width: '90vw'}">
-                    <div class="p-field p-fluid">
-                        <h5 class="p-text-left">Titulo del curso</h5>
-                        <InputText id="titulo" type="titulo" v-model="Course.title"/>
-                        <small id="courseTitle-help" class="p-invalid" :hidden="htitle">Falta titulo.</small>
-                    </div>
-                    <div class="p-mr-2 p-mb-2 p-text-left">
-                        <h5>Clasifique el curso</h5>
-                        <Dropdown v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area" @change="searchBranch()" class="p-mr-2 p-mb-2"/>
-                        <Dropdown v-model="selectedBranch" :options="branch" optionLabel="title" placeholder="Rama" class="p-mr-2"/>
-                        <small id="courseFilter-help" class="p-invalid" :hidden="hfilter">Por favor clasifique el curso.</small>
-                    </div>
+                <div class="p-field p-fluid">
+                    <h5 class="p-text-left">Titulo del curso</h5>
+                    <InputText id="titulo" type="titulo" v-model="Course.title"/>
+                    <small id="courseTitle-help" class="p-invalid" :hidden="htitle">Falta titulo.</small>
+                </div>
+                <div class="p-mr-2 p-mb-2 p-text-left">
+                    <h5>Clasifique el curso</h5>
+                    <Dropdown v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area" @change="searchBranch()" class="p-mr-2 p-mb-2"/>
+                    <Dropdown v-model="selectedBranch" :options="branch" optionLabel="title" placeholder="Rama" class="p-mr-2"/>
+                    <small id="courseFilter-help" class="p-invalid" :hidden="hfilter">Por favor clasifique el curso.</small>
+                </div>
                     
-                    <div class="p-field p-fluid">
-                        <h5 class="p-text-left">Descripcion</h5>
-                        <Textarea id="descripcion" type="descripcion" v-model="Course.description"/>
-                        <small id="courseDescription-help" class="p-invalid" :hidden="hdescription">Falta descripcion.</small>
-                    </div>
-                    <h5>Añadir leccion</h5>
-                    <div class="p-field p-fluid p-text-left">                        
-                        <h5>Titulo</h5>
-                        <InputText id="LessonTitle" v-model="lessonDT.title"/>
-                        <small id="lessonTitle-help" class="p-invalid" :hidden="hlessonTitle">Falta Titulo de la Leccion.</small>
-                    </div>
-                    <div class="p-field p-fluid p-text-left">
-                        <h5>Descripcion</h5>
-                        <Editor v-model="lessonDT.description" editorStyle="height: 320px"/>
-                        <small id="lessonDescription-help" class="p-invalid" :hidden="hlessonDescription">Falta la descripcion de la leccion.</small>
-                    </div>
-                    <div>
-                        <Button class="p-text-left p-mr-2" label="Añadir Leccion" icon="pi pi-plus" @click="newLesson()"/>                        
-                    </div>  
-                    <small id="lessonTable-help" class="p-invalid" :hidden="hlessonTable">Agregue al menos una leccion</small>                  
-                    <DataTable ref="dt" :value="lessons" :selection.sync="courseSelection" dataKey="id" :paginator="true" :rows="10">                
-                        <Column field="id" header="ID"></Column>
-                        <Column field="title" header="Titulo"></Column>
-                        <Column :exportable="false">
-                            <template  #body="slotProps">
-                                <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning" @click="editLesson(slotProps.data)"/>
-                                <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="deleteLesson(slotProps.data)"/>                                
-                            </template>
-                        </Column>
-                    </DataTable> 
-                                      
-                    <div>
-                        <Button :label.sync="BLabel" icon="pi pi-plus" class="p-button-success p-mr-2" @click="courseAction()" />
-                        <Button label="Cancelar" icon="pi pi-ban" @click="closeCreate()"/>
-                    </div>                
+                <div class="p-field p-fluid">
+                    <h5 class="p-text-left">Descripcion</h5>
+                    <Textarea id="descripcion" type="descripcion" v-model="Course.description"/>
+                    <small id="courseDescription-help" class="p-invalid" :hidden="hdescription">Falta descripcion.</small>
+                </div>                    
+                <div>
+                    <Button class="p-text-left p-mr-2 p-mb-4" label="Añadir Leccion" icon="pi pi-plus" @click="displayLesson = true"/>                        
+                </div>  
+                <small id="lessonTable-help" class="p-invalid" :hidden="hlessonTable">Agregue al menos una leccion</small>                  
+                <DataTable ref="dt" :value="lessons" :selection.sync="courseSelection" dataKey="id" :paginator="true" :rows="10">                
+                    <Column field="id" header="ID"></Column>
+                    <Column field="title" header="Titulo"></Column>
+                    <Column :exportable="false">
+                        <template  #body="slotProps">
+                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning" @click="editLesson(slotProps.data)"/>
+                            <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="deleteLesson(slotProps.data)"/>                                
+                        </template>
+                    </Column>
+                </DataTable> 
+                <template #footer>
+                    <Button :label.sync="BLabel" icon="pi pi-plus" class="p-button-success p-mr-2" @click="courseAction()" />
+                    <Button label="Cancelar" icon="pi pi-ban" @click="closeCreate()"/>
+                    </template>                
+            </Dialog>                    
+            <Dialog :visible.sync="displayLesson" header="Editor de Leccion" :modal="true" :style="{width: '90vw'}">
+                <div class="p-field p-fluid p-text-left">                        
+                    <h5>Titulo</h5>
+                    <InputText id="LessonTitle" v-model="lessonDT.title"/>
+                    <small id="lessonTitle-help" class="p-invalid" :hidden="hlessonTitle">Falta Titulo de la Leccion.</small>
+                </div>
+                <div class="p-field p-fluid p-text-left">
+                    <h5>Descripcion</h5>
+                    <Editor v-model="lessonDT.description" editorStyle="height: 320px"/>
+                    <small id="lessonDescription-help" class="p-invalid" :hidden="hlessonDescription">Falta la descripcion de la leccion.</small>
+                </div>
+                <div class="p-mr-2 p-mb-2 p-text-left">
+                    <h5>Añadir Recursos</h5>
+                    <Dropdown v-model="selectedResource" :options="resources" optionLabel="type" placeholder="Tipo de recurso" class="p-mr-2"/>
+                    <Dropdown v-model="selectedSource" :options="source" optionLabel="source" placeholder="Fuente" class="p-mr-2"/>
+                    <InputText  placeholder="URL" v-model="url" class="p-mr-2"/>
+                    <Button label="Añadir" class="p-button-rounded p-button-warning"/>
+                    <small id="courseFilter-help" class="p-invalid" :hidden="hfilter">Por favor clasifique el curso.</small>
+                </div>
+                <template #footer>
+                    <Button label="Guardar" class="p-button-rounded p-button-warning" @click="newLesson()"/>
+                    <Button label="Cancelar" class="p-button-rounded p-button-danger" @click="displayLesson = false"/>
+                </template>
             </Dialog>
         </div>
+        <br class="p-mb-4"/>
     </div>   
 </template>
 <script>    
@@ -87,6 +97,7 @@ export default {
             branch: [],
             courseSelection: null,
             displayCreate: false,
+            displayLesson: false,
             Course:{
                 title:"",
                 description:"",
@@ -107,6 +118,18 @@ export default {
             hlessonTable: true,         
             courses: [],
             BLabel: "Crear",
+            selectedResource: null,
+            selectedSource: null,
+            resources:[
+                {id:0,type:'Video'},
+                {id:1,type:'Imagen'},
+                {id:2,type:'Documento'},
+            ],
+            source:[
+                {id:0, source:'YouTube'},
+                {id:1, source:'Google'}
+            ],
+            url: null,
         }
     },
     kbService: null,
@@ -208,7 +231,8 @@ export default {
                     }
                 } 
                 if(this.lessons.length == 0) this.hlessonTable = false;
-                else this.hlessonTable = true;          
+                else this.hlessonTable = true;   
+                this.displayLesson = false;       
                 this.lessonDT = {};
             }
         },
@@ -220,6 +244,7 @@ export default {
         },
         editLesson: function(Lesson){
             this.lessonDT = Lesson;
+            this.displayLesson = true;
         },
         courseAction: function(){   
             if(this.Course.title=="" || this.Course.title == null)this.htitle=false;
@@ -257,3 +282,5 @@ export default {
     }    
 }
 </script>
+<style>
+</style>

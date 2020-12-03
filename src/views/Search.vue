@@ -34,30 +34,30 @@
                 </template>
             </Column>
                    
-        </DataTable>
-        
-        <Dialog :header.sync="course.title" :visible.sync="displayMaximizable" :style="{width: '50vw'}" :maximizable="true" :modal="true">
-            <p class="p-m-0"></p>
-            <div class="p-text-left">
-                <h5>Descripcion del curso</h5>
-                {{course.description}}
-            </div>  
-            <div>
-                <h5>Cantidad de Clases: {{lessons.length}}</h5>
-                <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">                
-                    <Column field="title" header="Titulo"></Column>  
-                </DataTable> 
-            </div>  
-            <template #footer>
-                <Button label="Volver" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
-                <Button label="Inscribirse" icon="pi pi-check" @click="inscribir()" autofocus />
-            </template>
-        </Dialog> 
-        <Dialog :header.sync="message.title" :visible.sync="message.display" :style="{width: '50vw'}" :modal="true">
-            {{message.content}}
-        </Dialog>       
+        </DataTable>           
+            
+            <Dialog :header.sync="course.title" :visible.sync="displayMaximizable" :style="{width: '50vw'}" :maximizable="true" :modal="true">
+                <p class="p-m-0"></p>
+                <div class="p-text-left">
+                    <h5>Descripcion del curso</h5>
+                    {{course.description}}
+                </div>  
+                <div>
+                    <h5>Cantidad de Clases: {{lessons.length}}</h5>
+                    <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">                
+                        <Column field="title" header="Titulo"></Column>  
+                    </DataTable> 
+                </div>  
+                <template #footer>
+                    <Button label="Volver" icon="pi pi-times" @click="closeMaximizable" class="p-button-text"/>
+                    <Button label="Inscribirse" icon="pi pi-check" @click="inscribir()" autofocus />
+                </template>
+            </Dialog> 
+            <Dialog :header.sync="message.title" :visible.sync="message.display" :style="{width: '50vw'}" :modal="true">
+                {{message.content}}
+            </Dialog>       
+        </div>
     </div>
-</div>
 </template>
 
 <script>

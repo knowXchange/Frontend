@@ -59,18 +59,51 @@
             small
           ></b-table>
       </div>
-
-    
+      <div>
+        <Carousel :key="cKey" :value="videos" :numVisible="numVideos" :numScroll="1">
+          <template #item="slotProps">
+            <div class="p-mr-2" style="width: 10%">
+              <iframe width="300" height="200" 
+                :src="slotProps.data" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+              </iframe>
+            </div> 
+            <div>
+              <Button label="Remover" icon="pi pi-trash" class="p-button-success p-mr-2" @click="remove(slotProps.data)"/>
+            </div>          
+          </template>
+        </Carousel>
+      </div>
+      <div class="p-mb-4">
+        <InputText id="URL modificator" type="email" v-model="url"/>
+        
+        <Button label="Ver" icon="pi pi-check" class="p-button-success p-mr-2" @click="watch()"/>
+        <Button label="Guardar" icon="pi pi-check" class="p-button-success p-mr-2" @click="modified()"/>
+      </div> 
+      <div>
+        <iframe id="video" width="560" height="315" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div> 
     <router-view/>
   </div>
 </template>
 
 <script>
   export default {
+    name : 'pruebas',
     data() {
       return {
+        pos : 0,
+        url: '',
+        videos: [
+          'https://drive.google.com/file/d/1QLplrxqDRQyh1jhA5FXewN7P6IOpzRMn/preview',
+          'https://www.youtube.com/embed/videoseries?list=PLo3pNg0eiPc9QucHWnf-msi4iZZksjwP5'
+        ],
+        numVideos : 0,
         perPage: 3,
         currentPage: 1,
+        cKey:0,
         items: [
           { id: 1, first_name: 'Fred', last_name: 'Flintstone' },
           { id: 2, first_name: 'Wilma', last_name: 'Flintstone' },
@@ -87,6 +120,39 @@
     computed: {
       rows() {
         return this.items.length
+      }
+    },
+    beforeMount(){
+      if(this.videos.length <= 3) this.numVideos = this.videos.length;
+      else this.numVideos = 3;
+    },
+    methods:{
+      next(){
+        document.getElementById('frame').src = this.videos[this.pos + 1];
+        this.pos += 1;       
+      },
+      previous(){
+        document.getElementById('frame').src = this.videos[this.pos - 1];
+        this.pos -= 1;
+      },
+      modified(){        
+        
+        this.url = this.url.replace('watch?v=','embed/').split("&")[0];
+        document.getElementById('video').src = this.url;
+        this.videos.push(this.url);
+        this.setCarouselNum();
+        this.url = "";
+      },
+      watch(){
+        document.getElementById('video').src = this.url.replace('watch?v=','embed/').split("&")[0];
+      },
+      remove(item){
+        console.log(item);
+        this.videos = this.videos.filter(val =>val !== item);      
+        this.setCarouselNum();
+      },
+      setCarouselNum(){        
+        if(this.videos.length <=3) this.cKey += 1;
       }
     }
   }

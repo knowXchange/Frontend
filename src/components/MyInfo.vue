@@ -1,10 +1,8 @@
 <template>
     <div>
-        <div>
-            
-        </div>
+        <br class="p-mb-4"/>
         <div style="margin: 0 auto; width: 80%">            
-            <Panel header='Mi Informacion'>  
+            <Panel header='Mi Informacion' class="p-mb-4">  
                 <div class="p-field p-fluid">          
                     <h5 class="p-text-left">Nombre de Usuario</h5>
                     <InputText id="username" type="text" v-model="user.name" disabled/>
