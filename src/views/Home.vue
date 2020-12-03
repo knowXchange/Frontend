@@ -6,19 +6,66 @@
         </div>
     <Navbar/>
     <br>
-    <Carousel :value="courses" :numVisible="2" :numScroll="1">
-          <template #item="slotProps">
-            <div>
-                {{slotProps.data.title}}
-            </div>
-            <div>
-                {{slotProps.data.description}}
-            </div>
-            <div>
-                {{slotProps.data.puntuacion}}
-            </div>
-          </template>
-        </Carousel>
+    <div style="display: flex">
+      <Card style="width: 25em">
+            <template slot="header">
+                <img alt="user header" src="demo/images/usercard.png">
+            </template>
+            <template slot="title">
+                Curso
+            </template>
+            <template slot="subtitle">
+                Card subtitle
+            </template>
+            <template slot="content">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt
+                quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!</p>
+            </template>
+            <template slot="footer">
+                <Button icon="pi pi-check" label="Save" class="p-button-success" />
+                <Button icon="pi pi-times" label="Cancel" class="p-button-secondary" style="margin-left: .5em" />
+            </template>
+        </Card>
+        <Card style="width: 25em">
+            <template slot="header">
+                <img alt="user header" src="demo/images/usercard.png">
+            </template>
+            <template slot="title">
+                Curso
+            </template>
+            <template slot="subtitle">
+                Card subtitle
+            </template>
+            <template slot="content">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt
+                quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!</p>
+            </template>
+            <template slot="footer">
+                <Button icon="pi pi-check" label="Save" class="p-button-success"/>
+                <Button icon="pi pi-times" label="Cancel" class="p-button-secondary" style="margin-left: .5em" />
+            </template>
+        </Card>
+        <Card style="width: 25em">
+            <template slot="header">
+                <img alt="user header" src="demo/images/usercard.png">
+            </template>
+            <template slot="title">
+                Curso
+            </template>
+            <template slot="subtitle">
+                Card subtitle
+            </template>
+            <template slot="content">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt
+                quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!</p>
+            </template>
+            <template slot="footer">
+                <Button icon="pi pi-check" label="Save" class="p-button-success"/>
+                <Button icon="pi pi-times" label="Cancel" class="p-button-secondary" style="margin-left: .5em" />
+            </template>
+        </Card>
+      
+    </div>
     <router-view/>
   </div>
 </template>
@@ -30,25 +77,7 @@ export default {
   name: 'Home',
   components: {
     Navbar
-  },
-  data(){
-      return{
-          courses: [
-                {
-                    id:0,
-                    title: "titulo",
-                    description: "Descripcion",
-                    puntuacion: 4
-                },
-                {
-                    id:1,
-                    title: "titulo2",
-                    description: "Descripcion2",
-                    puntuacion: 3
-                }
-            ]
-      }
-  }  
+  }
 }
 </script>
 
