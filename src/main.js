@@ -20,6 +20,10 @@ import Menubar from 'primevue/menubar';
 import Editor from 'primevue/editor';
 import Carousel from 'primevue/carousel';
 
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
+
+
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
@@ -50,6 +54,9 @@ Vue.component('Toolbar', Toolbar);
 Vue.component('Menubar', Menubar);
 Vue.component('Editor', Editor);
 Vue.component('Carousel', Carousel);
+
+Vue.component('Accordion',Accordion);
+Vue.component('AccordionTab',AccordionTab);
 
 new Vue({
   router,
