@@ -55,6 +55,13 @@ export default class UserService {
                         axios.post(this.url3 + "addResource/"+Lessons[index].id, Lessons[index].resources[i]);                           
                     }
                     console.log(Lessons[index]);
+                }).catch(error => {
+                    axios.post(this.url2+"addLessonKX?Courseid="+id+"&title="+Lessons[index].title+"&description="+Lessons[index].description)
+                    .then(data=>{
+                        for (let i= 0; i < Lessons[index].resources.length; i++) {
+                            axios.post(this.url3 + "addResource/"+Lessons[index].id, Lessons[index].resources[i]);                           
+                        }
+                    });
                 })
         }
     }

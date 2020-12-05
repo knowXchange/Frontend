@@ -156,9 +156,9 @@ export default {
             selectedResource: [],
             selectedSource: [],
             resourcesType:[
-                {id:0, Type: 'Video'},
-                {id:1, Type: 'Imagen'},
-                {id:2, Type: 'Documento'}
+                {id:0, type: 'Video'},
+                {id:1, type: 'Imagen'},
+                {id:2, type: 'Documento'}
             ],
             source:[
                 {id:0, source:'YouTube'},
