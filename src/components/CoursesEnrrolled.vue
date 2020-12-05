@@ -84,7 +84,7 @@
             <div style="margin-top: .5em">
                 <transition-group name="dynamic-box" tag="div" class="p-jc-end">
                     <div v-for="col of questions" :key="col.id" class="p-col p-jc-end">
-                        <div class="p-shadow-9 p-text-left p-mb-2">
+                        <div class="rounded-pill p-shadow-5 p-text-left p-text-italic">
                             <strong>{{col.asking_user.name}}</strong><br/>{{col.text}}<br/>
                         </div>  
                         <div style="margin-right:0;">                     
@@ -93,8 +93,12 @@
                         <div style="margin-top: .5em">
                             <transition-group name="dynamic-box" tag="div">
                                 <div v-for="ans of col.replys" :key="ans.id" class="p-col">
-                                    <div class="p-shadow-7 p-text-left" style="margin-left:auto; margin-right:0; width: 95%">
-                                        <strong>{{ans.personAnswering.name}}</strong><br/>{{ans.text}}
+                                    <div class="rounded-pill p-shadow-5 p-text-left p-text-italic" style="margin:2.5%; width: 95%; border-radius: 2%">
+                                        <div class="p-text-left" style="margin-left:5%"> 
+                                            <strong>{{ans.personAnswering.name}}:</strong>
+                                            {{ans.text}}
+                                            <br/>
+                                        </div>
                                     </div>
                                 </div>
                             </transition-group>

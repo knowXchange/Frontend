@@ -69,7 +69,8 @@ export default {
                       },
                       {
                          label: 'Contactanos',
-                         icon: 'pi pi-fw pi-envelope'
+                         icon: 'pi pi-fw pi-envelope',
+                         to: '/contact-us'
                       },
                    ]
                 }
