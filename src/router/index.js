@@ -29,31 +29,43 @@ const routes = [
     component: () => import(/* webpackChunkName: "register" */'../views/Account.vue'),
     children: [
       {
-        path: "courses-enrrolled",
-        name: "CoursesEnrrolled",
-        component: ()=> import('../components/CoursesEnrrolled.vue')
-      },
-      {
-        path: "courses-created",
-        name: "CoursesCreated",
-        component: ()=> import('../components/CoursesCreated.vue'),
+        path: "my-courses",
+        name: "MyCourses",
+        component: ()=> import('../components/MyCourses.vue'),
+        children:[
+          {
+            path: "courses-enrrolled",
+            name: "CoursesEnrrolled",
+            component: ()=> import('../components/CoursesEnrrolled.vue')
+          },
+          {
+            path: "courses-created",
+            name: "CoursesCreated",
+            component: ()=> import('../components/CoursesCreated.vue'),
+          }
+        ]
       },
       {
         path: "my-info",
         name: "MyInfo",
         component: ()=> import('../components/MyInfo.vue'),        
-      },
+      }
     ]
   },
   {
     path: '/search',
     name: 'Search',
-    component:() => import(/* webpackChunkName: "login" */ '../views/Search.vue')
+    component:() => import(/* webpackChunkName: "login" */ '../views/Search.vue'),
   },
   {
-    path: '/pruebas',
-    name: 'pruebas',
-    component:() => import(/* webpackChunkName: "login" */ '../views/SearchPage.vue')
+    path: '/about',
+    name: 'About',
+    component:() => import(/* webpackChunkName: "login" */'../views/About.vue'),
+  },
+  {
+    path: '/help',
+    name: 'Help',
+    component:() => import(/* webpackChunkName: "login" */'../views/Help.vue'),
   }
 ]
 

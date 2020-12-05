@@ -22,6 +22,10 @@ import Carousel from 'primevue/carousel';
 import Checkbox from 'primevue/checkbox';
 import ScrollPanel from 'primevue/scrollpanel';
 
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
+
+
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
@@ -54,6 +58,9 @@ Vue.component('Editor', Editor);
 Vue.component('Carousel', Carousel);
 Vue.component('Checkbox', Checkbox);
 Vue.component('ScrollPanel', ScrollPanel);
+
+Vue.component('Accordion',Accordion);
+Vue.component('AccordionTab',AccordionTab);
 
 new Vue({
   router,

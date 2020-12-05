@@ -1,11 +1,9 @@
 <template>
     <div style="background-color: rgb(230, 230, 230);">
-        <div style=" background-color:#adebad; width:auto; height:100px">
-            <h1 style="background-color: rgb(173, 235, 173); position:absolute; top:5%; width:100%;  margin-bottom:0px; text-align: center;"> <router-link to="/"> KnowXChange </router-link>  </h1>
-        </div>
+        <topbar />
         <div>
             <Menubar >
-                <template #end :style="{'margin':auto}">
+                <template #start :style="{'margin':auto}">
                     Filtro:
                     <Dropdown @change ="buscarRama" v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
                     <span class="p-input-icon-left">
@@ -56,9 +54,12 @@
 
 <script>
 import SearchService from '../service/CoursesService';
-import topbar from '../components/topbar' 
+import topbar from '../components/Mybar'
 import UserService from '../service/UserService' 
 import KBService from '../service/KBService'   
+import Mybar from '../components/Mybar.vue';
+import Topbar from '../components/topbar.vue';
+
     export default {
     
         name: 'Search',
