@@ -1,7 +1,13 @@
 <template>
     <div>
     <topbar/>
-    <Menubar :model="items" />
+    <Menubar :model="items">
+      <template #end>
+         <Button :label.sync="buttonLabelA" style="background:#f8f9fa;" class="p-button-outlined p-button-success p-mr-2" @click="actionA()"/>
+         <!-- Boton para registrarse o cerrar sesion -->
+         <Button :label.sync="buttonLabelB" style="background:#f8f9fa;" class="p-button-outlined p-button-success" @click="actionB()"/>
+      </template>
+    </Menubar>
     </div>
 </template>
 <script>
@@ -61,16 +67,44 @@ export default {
                          icon: 'pi pi-fw pi-envelope'
                       },
                    ]
-                },
-                {
-                   label:'Cerrar Sesión',
-                   icon:'pi pi-fw pi-sign-out',
-                   to: '/login'
                 }
              ]
         }
+    },
+    created() {
+            if(localStorage.getItem('id')==0){
+                this.buttonLabelA = "Iniciar Sesion";
+                this.buttonLabelB = "Registrarse";
+            }
+            else{
+                this.userService.getUser(localStorage.getItem('id')).then(data => {
+                    console.log(data),
+                    this.buttonLabelA = "Hola "+ data.data.name
+                });
+                this.buttonLabelB = "Cerrar Sesion";         
+            }
+        },
+    beforeMount(){
+    },
+    mounted(){
+    },
+    methods:{
+        actionA: function(){
+            if(localStorage.getItem('id')==0){
+                this.$router.push('login')
+            }
+            else this.$router.push('account/my-info')
+        },
+        actionB: function(){
+            if(localStorage.getItem('id')==0){
+                this.$router.push('register')
+            }
+            else{
+                localStorage.setItem('id',0);
+                location.reload();
+            }
+        },
     }
-    
 }
 </script>
 <style>
