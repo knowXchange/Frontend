@@ -12,14 +12,19 @@
 </template>
 <script>
 import topbar from '../components/topbar'
-
+import SearchService from '../service/CoursesService';
+import UserService from '../service/UserService';
 export default {
     name: 'mybar',
+    varSearchService : null,
+    userService: null,
     components: {
         topbar
     },
     data(){
         return {
+            buttonLabelA: "",
+            buttonLabelB: "",
             items: [
                 {
                    label:'Home',
@@ -72,6 +77,8 @@ export default {
         }
     },
     created() {
+            this.varSearchService = new SearchService(); 
+            this.userService = new UserService();
             if(localStorage.getItem('id')==0){
                 this.buttonLabelA = "Iniciar Sesion";
                 this.buttonLabelB = "Registrarse";
@@ -91,13 +98,13 @@ export default {
     methods:{
         actionA: function(){
             if(localStorage.getItem('id')==0){
-                this.$router.push('login')
+                this.$router.push({path:'/login'})
             }
-            else this.$router.push('account/my-info')
+            else this.$router.push({path:'/account/my-info'})
         },
         actionB: function(){
             if(localStorage.getItem('id')==0){
-                this.$router.push('register')
+                this.$router.push({path:'/register'})
             }
             else{
                 localStorage.setItem('id',0);
