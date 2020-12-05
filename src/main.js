@@ -19,6 +19,8 @@ import Toolbar from 'primevue/toolbar'
 import Menubar from 'primevue/menubar';
 import Editor from 'primevue/editor';
 import Carousel from 'primevue/carousel';
+import Checkbox from 'primevue/checkbox';
+import ScrollPanel from 'primevue/scrollpanel';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -50,6 +52,8 @@ Vue.component('Toolbar', Toolbar);
 Vue.component('Menubar', Menubar);
 Vue.component('Editor', Editor);
 Vue.component('Carousel', Carousel);
+Vue.component('Checkbox', Checkbox);
+Vue.component('ScrollPanel', ScrollPanel);
 
 new Vue({
   router,

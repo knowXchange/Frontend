@@ -1,7 +1,7 @@
 <template>
 <div class="card" style="font-family: 'Segoe UI', Arial, sans-serif;">
     <topbar/>
-    <div class="p-text-center" style="margin:0 auto; width: 25rem; margin-bottom: 2em">
+    <div class="p-text-center p-mt-4" style="margin:0 auto; width: 25rem; margin-bottom: 2em">
         
         
         <Panel header='Inicio de sesion'>            
@@ -16,10 +16,10 @@
                 @click.native="SingIn()"/>   
             <Dialog                 
                 :visible.sync="display" 
-                header="Datos incorrectos"
+                header="Alerta!"
                 :modal="true" 
                 :style="{width:'50vw'}">                
-                Usuario o contraseña incorrectos
+                {{texto}}
             </Dialog>         
             <h5></h5>
             <Button label="Registrarse" @click="$router.push('register')"/>
@@ -38,25 +38,19 @@ export default {
         topbar
     },
     data() {
-        return {   
-            Users : null,
+        return {
             User:{
                 name: null,
                 password: null
             },    
             display: false,
-            user : null,
+            texto: null
         }
     },  
     userService : null,
     created(){
         this.userService = new UserService();
 
-    },
-    mounted(){
-        this.userService.getAll().then(data => {
-            console.log(data);
-        })
     },
     methods:{
         mostrar: function(texto){
@@ -69,13 +63,19 @@ export default {
         },
         SingIn: function(){
             this.userService.login(this.User).then(data=>{
-                if(data.data == 0)
-                    this.mostrar("Usuario o contraseña incorrectos")
-                else{
+                console.log(data);
+                if(data.request.status === 200){
                     localStorage.setItem('id',data.data),
                     this.$router.push('Account/my-info')
                 }
-            })
+                else{
+                    this.mostrar("Error al iniciar sesion");
+                }
+            }).catch( error => {
+                if(error.response.status === 400) 
+                    this.mostrar("Usuario no encontrado");
+                else this.mostrar("Error en el Servidor");
+                });
         }
 
     }
