@@ -4,8 +4,8 @@
         <div style="margin: 0 auto; width: 80%">    
 
             <Panel header='Tokens Disponibles' class="p-mb-4">
-                <i class="pi pi-money-bill"></i>
                 <strong>{{user.tokens}}</strong>
+                <i class="pi pi-money-bill"></i>
             </Panel>
             <Panel header='Mi Informacion' class="p-mb-4">  
                 <div class="p-field p-fluid">          
@@ -59,7 +59,8 @@ export default {
     name: 'MyInfo',
     data(){
         return{
-            user:{},
+            user:{
+            },
             vpassword:"",
             huser: true,
             hemail: true,

@@ -3,6 +3,9 @@
     <topbar/>
     <Menubar :model="items">
       <template #end>
+
+         <Button :label.sync="tokensLabel" icon="pi pi-money-bill" iconPos="right" class="p-button-text p-button-success p-mr-2" />
+         
          <Button :label.sync="buttonLabelA" style="background:#f8f9fa;" class="p-button-outlined p-button-success p-mr-2" @click="actionA()"/>
          <!-- Boton para registrarse o cerrar sesion -->
          <Button :label.sync="buttonLabelB" style="background:#f8f9fa;" class="p-button-outlined p-button-success" @click="actionB()"/>
@@ -23,8 +26,10 @@ export default {
     },
     data(){
         return {
+            user:{},
             buttonLabelA: "",
             buttonLabelB: "",
+            tokensLabel: "",
             items: [
                 {
                    label:'Home',
@@ -82,18 +87,26 @@ export default {
             if(localStorage.getItem('id')==0){
                 this.buttonLabelA = "Iniciar Sesion";
                 this.buttonLabelB = "Registrarse";
+                this.tokensLabel = "0";
             }
             else{
                 this.userService.getUser(localStorage.getItem('id')).then(data => {
                     console.log(data),
                     this.buttonLabelA = "Hola "+ data.data.name
                 });
-                this.buttonLabelB = "Cerrar Sesion";         
+                this.buttonLabelB = "Cerrar Sesion";  
+                this.tokensLabel = user.tokens;       
             }
         },
     beforeMount(){
     },
     mounted(){
+
+        this.userService.getUser(localStorage.getItem('id')).then(data => {
+            console.log(data),
+            this.user = data.data,
+            this.user.password = ""
+        })
     },
     methods:{
         actionA: function(){
