@@ -86,19 +86,18 @@
                 <strong> Zona de Preguntas</strong>
             </div>
             <div class="p-text-left">
-                <Textarea v-model="question.title" placeholder="Cual es tu pregunta?" rows="3" cols="30" style="width: 95%"/>
+                <Textarea v-model="question.text" placeholder="Cual es tu pregunta?" rows="3" cols="30" style="width: 95%"/>
                 <Button label='Publicar' class="p-button-rounded  p-button-success" @click="publish()"/>
             </div>
             <div style="margin-top: .5em">
                 <transition-group name="dynamic-box" tag="div" class="p-jc-end">
-                    <div v-for="col of questions" :key="col.id" class="p-col p-jc-end">
+                    <div v-for="(col, index) of questions" :key="col.id" class="p-col p-jc-end">
                         <div class="p-shadow-9 p-text-left p-mb-2">
                             <strong>{{col.asking_user.name}}</strong><br/>{{col.text}}<br/>
                         </div>  
                         <div style="margin-right:0;">                     
-                            <Button label='Responder' class="p-button-rounded  p-button-success" @click="openReply(col)"/>  
+                            <Button label='Responder' class="p-button-rounded  p-button-success" @click="openReply(index, col)"/>  
                         </div>           
-                        {{questions[0].replys}}            
                         <div style="margin-top: .5em">
                             <transition-group name="dynamic-box" tag="div">
                                 <div v-for="ans of col.replys" :key="ans.id" class="p-col">
@@ -127,6 +126,7 @@ export default {
     name: 'CoursesEnrrolled',
     data(){
         return{
+            indexQuestion:null,
             reseñas:{},
             grade: null,
             dButton: false,
@@ -204,8 +204,8 @@ export default {
             this.lesson = lesson;
             this.resource = this.lesson.resorces
             this.posLesson = this.lessons.findIndex(element=> element==lesson);
-            this.getQuestions();    
-            this.getAnswers();        
+            this.getQuestions();
+            setTimeout(() => this.questions.reverse(), 500);
             this.displayLesson = true;
             setTimeout(() => document.getElementById('description').innerHTML = this.lesson.description, 0);
             
@@ -229,22 +229,23 @@ export default {
         boton: function(usuario){
             console.log(usuario)
         },
-        openReply: function(question){
+        openReply: function(index, question){
+            this.indexQuestion = index;
             this.question = question;
             this.displayReply = true;          
         },
         reply: function(){
+            console.log(this.questions[this.indexQuestion])
             this.replyDialog.userId = localStorage.getItem('id');
             this.replyDialog.questionId = this.question.id;
             var temp = this.question
             this.qService.postReply(this.replyDialog).then(
                 data=>{
-                    if(this.questions.find(element => element == temp).replys == null)
-                        this.questions.find(element => element == temp).replys = [data.data];
-                    else this.questions.find(element => element == temp).replys = [...this.questions.find(element => element == temp).replys, data.data];
+                    if(this.questions[this.indexQuestion].replys == null)
+                        setTimeout(() => this.questions[this.indexQuestion].replys = [data.data],500);
+                    else this.questions[this.indexQuestion].replys = [ data.data, ...this.questions[this.indexQuestion].replys];
                 }
-            );   
-
+            );
             this.displayReply = false;
             this.replyDialog = {};
             this.question = {};
@@ -252,27 +253,24 @@ export default {
         publish: function(){
             this.qService.postQuestion(this.question, this.lesson.id).then(
                 data => {
-                    this.questions = [...this.questions,data.data];
+                    this.questions = [data.data, ...this.questions];
                 }
             );
         },
         getQuestions: function(){
             this.qService.getQuestions(this.lesson.id).then(
-                data => {
-                    this.questions = data.data;                                     
+                data => { 
+                    data.data.forEach(element =>{
+                        this.qService.getReplys(element.id).then(
+                            replys=>{
+                                element.replys = replys.data;
+                            }
+                        );
+                    });
+                    setTimeout(() => this.questions = data.data, 200);
+                    
                 }
             );
-        },
-        getAnswers: function(){
-            var temp = this.questions;
-            console.log(this.questions);
-            this.questions.forEach(element => {
-                this.qService.getReplys(element.id).then(
-                    replys =>{
-                        element.replys = replys.data;
-                    }
-                );                        
-            });
         },
         viewResource(resource){
             if(resource.type == 'Video')
