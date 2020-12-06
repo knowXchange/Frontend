@@ -22,6 +22,11 @@
                 
                 <Column field="title" header="Nombre del curso"></Column>
                 <Column field="description" header="Descripción del curso"></Column>
+                <Column header="Puntuacion">
+                    <template #body="slotProps">
+                        <Rating :value="Math.round(slotProps.data.averageScore)" :readonly="true" :cancel="false" />
+                    </template>
+                </Column>
                 <Column :exportable="false">
                     <template  #body="slotProps">
                         <Button label="Ver curso" icon="pi pi-external-link" @click="openMaximizable(slotProps.data)" />
@@ -54,7 +59,7 @@
                                     <div>
                                          
                                         <h3>{{slotProps.data.opiningUser.name}}</h3>
-                                        <Rating :modelValue=slotProps.data.grade :readonly="true" :cancel="false" />
+                                        <Rating :value="Math.round(slotProps.data.grade)" :readonly="true" :cancel="false" />
                                         <h5 class="p-mb-1">Calificación {{slotProps.data.grade}}</h5>
                                         <h6 class="p-mt-0 p-mb-3">{{slotProps.data.description}}</h6>
                                        
@@ -203,8 +208,8 @@ import ReviewService from '../service/ReviewService'
                 }
             },
             openMaximizable(course) {
-                this.obtenerReseñas();
                 this.course = course;
+                this.obtenerReseñas();                
                 this.varSearchService.getLessons(course.id).then(data=>{
                     this.lessons = data.data
                 });

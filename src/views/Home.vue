@@ -9,23 +9,18 @@
     
 
         <div class="card">
-        <Carousel :value="courses" :numVisible="1" :numScroll="1" :responsiveOptions="responsiveOptions">
+        <Carousel :value="courses" :numVisible="1" :numScroll="1">
            
            <template #item="slotProps">
                <div class="product-item">
                   <div class="product-item-content">
-                      <div class="p-mb-3">
-                         <img :src="'demo/images/product/' + slotProps.data.image" :alt="slotProps.data.name" class="product-image" />
-                      </div>
-                      <div>
+                        <div>
                           <h4 class="p-mb-1">{{slotProps.data.title}}</h4>
                           <h6 class="p-mt-0 p-mb-3">{{slotProps.data.description}}</h6>
                           
                           <div class="car-buttons p-mt-5">
                              
                               <Button icon="pi pi-search" class="p-button p-button-rounded p-mr-2" @click="openMaximizable(slotProps.data)" />
-                              <Button icon="pi pi-star" class="p-button-success p-button-rounded p-mr-2" />
-                              <Button icon="pi pi-cog" class="p-button-help p-button-rounded" />
                             
                           </div>
                       </div>
