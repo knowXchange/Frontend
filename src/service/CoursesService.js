@@ -87,6 +87,9 @@ export default class UserService {
     getCourseRandom(cursos_aleatorios){
         return axios.get(this.url+"getRandomCoursesByPathVariable/"+cursos_aleatorios)
     }
+    getResources(id){
+        return axios.get(this.url3+"getLessonResourcesByPathVariable/"+id)
+    }
     deleteResource(id){
         return axios.delete(this.url3+"deleteByPathVariable/"+id)
     }

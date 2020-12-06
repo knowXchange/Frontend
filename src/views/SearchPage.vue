@@ -141,7 +141,8 @@
         this.url = "";
       },
       watch(){
-        document.getElementById('video').src = this.url.replace('watch?v=','embed/').split("&")[0];
+        document.getElementById('video').src = this.url.replace('view','preview');
+        //document.getElementById('video').src = this.url.replace('watch?v=','embed/').split("&")[0];
       },
       remove(item){
         console.log(item);

@@ -300,8 +300,11 @@ export default {
                         this.resources.push(this.resource);
                         this.resource = {};
                     }
-                    else if(this.selectedSource[0] == 'Google Drive'){
-
+                    else if(this.selectedSource[0] == 'Google'){
+                        this.resource.link = this.resource.link.replace('view','preview');
+                        this.resource.type = this.selectedResource[0];
+                        this.resources.push(this.resource);
+                        this.resource = {};
                     }
                     alert('Video Añadido')
                 }
@@ -326,9 +329,10 @@ export default {
                     this.resource.link = this.resource.link.replace('watch?v=','embed/').split("&")[0];                    
                     document.getElementById('video').src = this.resource.link;
                 }
-                else if(this.selectedSource[0] == 'Google Drive'){
-
-                }
+                else if(this.selectedSource[0] == 'Google'){
+                        this.resource.link = this.resource.link.replace('view','preview');
+                        document.getElementById('video').src = this.resource.link;
+                    }
             }
             else if(this.selectedResource[0] == 'Imagen'){
                 document.getElementById('video').src = this.resource.url;

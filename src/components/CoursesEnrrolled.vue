@@ -202,6 +202,11 @@ export default {
         openLesson: function(lesson){                         
             this.displayLessons = false;
             this.lesson = lesson;
+            this.coursesService.getResources(this.lesson.id).then(
+                data=>{
+                    this.lesson.resources = data.data;
+                }
+            );
             this.resource = this.lesson.resorces
             this.posLesson = this.lessons.findIndex(element=> element==lesson);
             this.getQuestions();
@@ -272,12 +277,12 @@ export default {
                 }
             );
         },
-        viewResource(resource){
-            if(resource.type == 'Video')
+        viewResource(resource){            
+            if(resource.type == 'Imagen')
+                document.getElementById('resource').innerHTML = '<img src="'+resource.link+'" alt="" width="500" height="333">'
+            else
                 document.getElementById("resource").innerHTML = 
                 '<div class="iframe-container p-mt-4"> <iframe id="video" width="560" height="315" src="'+resource.link+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
-            else if(resource.type == 'Imagen')
-                document.getElementById('resource').innerHTML = '<img src="'+resource.link+'" alt="" width="500" height="333">'
         }
 
     }
