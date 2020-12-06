@@ -39,7 +39,7 @@
             </Panel>
             <Dialog                 
                 :visible.sync="display" 
-                header='Operacion Exitosa'
+                header='Resultado de la operación'
                 :v-text.sync="text"
                 :modal="true" 
                 :style="{width:'50vw'}">          
@@ -87,7 +87,7 @@ export default {
             if (this.huser==true && this.hemail==true && this.hdescription==true){
                 this.userService.updateUser(this.user).then(data=>{
                     console.log(data);
-                    if(data.status === 200){
+                    if(data.request.status === 200){
                         this.text = "Informacion Actualizada con Exito";
                         this.display = true;
                     }
@@ -95,7 +95,15 @@ export default {
                         this.text="Error al actualizar la Informacion";
                         this.display = true;
                     }
-                })                             
+                }).catch(error => {
+                    if(error.response.status === 400){
+                        this.text = "Error, usuario no encontrado";
+                        this.display = true;
+                    }else{
+                        this.text = "Error en el servidor";
+                        this.display = true;
+                    }
+                });                             
             }
             
         },
@@ -107,15 +115,23 @@ export default {
             if (this.hpassword==true && this.hvpassword==true){
                 this.userService.updatePassword(this.user).then(data=>{
                     console.log(data);
-                    if(data.status === 200){
-                        this.text = "Contraseña Actualizada con Exito";
+                    if(data.request.status === 200){
+                        this.text = "Contraseña actualizada";
                         this.display = true;
                     }
                     else {
                         this.text="Error al actualizar la contraseña";
                         this.display = true;
                     }
-                })                             
+                    }).catch(error => {
+                        if(error.response.status === 400){
+                            this.text = "Error, usuario no encontrado";
+                            this.display = true;
+                        }else{
+                            this.text = "Error en el servidor";
+                            this.display = true;
+                        }
+                });                              
             }
         }
     }

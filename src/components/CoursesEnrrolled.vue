@@ -59,8 +59,29 @@
                 </div>
             </div>
             <div id="description" class="p-text-left">
-                Descripcion.
+                Descripcion.                
             </div>
+            <div>
+                <strong> Recursos de la leccion</strong>
+                <div class="p-p-4 p-grid p-jc-between">
+                    <div class="p-col-4">
+                        <DataTable ref="dt" :value="lesson.resources" :paginator="true" :rows="10">                    
+                            <Column field="type" header="Tipo"></Column>
+                            <Column header="Titulo">
+                                <template #body="slotProps">
+                                    <a :href="slotProps.data.link" rel="noopener noreferrer" target="_blank">{{slotProps.data.name}}</a>                               
+                                </template>
+                            </Column>
+                            <Column :exportable="false">
+                                <template  #body="slotProps">
+                                    <Button label="Ver Recurso" class="p-button-raised p-button-text" @click="viewResource(slotProps.data);"/>                              
+                                </template>
+                            </Column>
+                        </DataTable>
+                    </div>
+                    <div id="resource" class="p-col-8"/>        
+                </div>               
+            </div>           
             <div class="p-mb-2 p-text-left">
                 <strong> Zona de Preguntas</strong>
             </div>
@@ -108,6 +129,7 @@ export default {
         return{
             reseñas:{},
             grade: null,
+            url: null,
             courseSelection: null,
             lessonSelection: null,
             courses: [],
@@ -191,6 +213,7 @@ export default {
         openLesson: function(lesson){                         
             this.displayLessons = false;
             this.lesson = lesson;
+            this.resource = this.lesson.resorces
             this.posLesson = this.lessons.findIndex(element=> element==lesson);
             this.getQuestions();            
             this.displayLesson = true;
@@ -201,13 +224,17 @@ export default {
         next: function(){
             this.posLesson += 1;            
             this.lesson = this.lessons[this.posLesson]; 
+            this.resources = this.lessons.resources;
             document.getElementById('description').innerHTML = this.lesson.description; 
+            document.getElementById('resource').innerHTML = '';
             this.getQuestions(); 
         },
         previous: function(){
             this.posLesson -= 1;
             this.lesson = this.lessons[this.posLesson];
+            this.resources = this.lessons.resources;
             document.getElementById('description').innerHTML = this.lesson.description; 
+            document.getElementById('resource').innerHTML = '';
             this.getQuestions(); 
         },
         boton: function(usuario){
@@ -255,10 +282,31 @@ export default {
                     
                 }
             );
+        },
+        viewResource(resource){
+            if(resource.type == 'Video')
+                document.getElementById("resource").innerHTML = 
+                '<div class="iframe-container p-mt-4"> <iframe id="video" width="560" height="315" src="'+resource.link+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+            else if(resource.type == 'Imagen')
+                document.getElementById('resource').innerHTML = '<img src="'+resource.link+'" alt="" width="500" height="333">'
         }
 
     }
 }
 </script>
 <style>
+    .iframe-container {
+        overflow: hidden;
+        padding-top: 56.25%; /* 16:9*/
+        position: relative;
+    }
+
+    .iframe-container iframe {
+        border: 0;
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
 </style>

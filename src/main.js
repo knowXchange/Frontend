@@ -21,6 +21,11 @@ import Editor from 'primevue/editor';
 import Carousel from 'primevue/carousel';
 import Rating from 'primevue/rating';
 import DataView from 'primevue/dataview';
+import Checkbox from 'primevue/checkbox';
+import ScrollPanel from 'primevue/scrollpanel';
+
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
 
 
 import 'primevue/resources/themes/saga-blue/theme.css';
@@ -55,6 +60,11 @@ Vue.component('Menubar', Menubar);
 Vue.component('Editor', Editor);
 Vue.component('Carousel', Carousel);
 Vue.component('DataView', DataView);
+Vue.component('Checkbox', Checkbox);
+Vue.component('ScrollPanel', ScrollPanel);
+
+Vue.component('Accordion',Accordion);
+Vue.component('AccordionTab',AccordionTab);
 
 new Vue({
   router,

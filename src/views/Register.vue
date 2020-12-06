@@ -1,7 +1,7 @@
 <template>
 <div class="card" style="font-family: 'Segoe UI', Arial, sans-serif;">
     <topbar/>
-    <div class="p-text-center" style="margin:0 auto; width: 25rem; margin-bottom: 2em">
+    <div class="p-text-center p-mt-4" style="margin:0 auto; width: 25rem; margin-bottom: 2em">
         <Panel header='Registro de usuario'>  
             <div class="p-field p-fluid">          
                 <h5 class="p-text-left">Nombre de Usuario</h5>
@@ -15,7 +15,7 @@
             </div>
             <div class="p-field p-fluid">
                 <h5 class="p-text-left">Descripcion</h5>
-                <Textarea v-model="user.description" :autoResize="true" rows="5" cols="30"/>
+                <Textarea v-model="user.description" placeholder="Hola soy ..." :autoResize="true" rows="5" cols="30"/>
                 <small id="username2-help" class="p-invalid" :hidden="hdescription">Falta descripcion</small>
             </div>
             <div class="p-field p-fluid">
@@ -80,7 +80,7 @@ export default {
                 email: "",
                 password: "",
                 tocken: 100,
-                description: "hola soy"
+                description: null
             },  
             vpassword: "",   
             display: false,
@@ -119,9 +119,17 @@ export default {
             if (this.vpassword == "" || this.user.password!=this.vpassword) this.hvpassword=false
             else this.hvpassword=true
             if (this.huser==true && this.hemail==true && this.hpassword==true && this.hvpassword==true && this.hdescription==true){
-                this.userService.add(this.user).then(data => {
-                    if(data.request.status==200) this.mostrar("Registro exitoso")                    
-                })                
+                this.userService.addUser(this.user).then(data => {
+                    console.log(data);
+                    if(data.request.status==201) this.mostrar("Registro exitoso");
+                    else this.mostrar("Error en el registro")
+                }).catch(error =>{
+                    if( error.response.status === 400 ){
+                        this.mostrar("El usuario ya existe")
+                    }else{
+                        this.mostrar( "Error en el servidor" );
+                    }
+                });               
             }                
         }
     }

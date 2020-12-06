@@ -62,14 +62,12 @@
       <div>
         <Carousel :key="cKey" :value="videos" :numVisible="numVideos" :numScroll="1">
           <template #item="slotProps">
-            <div class="p-mr-2" style="width: 10%">
-              <iframe width="300" height="200" 
-                :src="slotProps.data" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
+            <div class="iframe-container p-mr-2">
+              <iframe width="200" height="100" :src="slotProps.data" 
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                loading="lazy" allowfullscreen>  
               </iframe>
-            </div> 
+            </div>
             <div>
               <Button label="Remover" icon="pi pi-trash" class="p-button-success p-mr-2" @click="remove(slotProps.data)"/>
             </div>          
@@ -97,7 +95,7 @@
         pos : 0,
         url: '',
         videos: [
-          'https://drive.google.com/file/d/1QLplrxqDRQyh1jhA5FXewN7P6IOpzRMn/preview',
+          'https://img.freepik.com/vector-gratis/circulo-brillante-iluminacion-purpura-aislado-sobre-fondo-oscuro_1441-2396.jpg?size=626&ext=jpg',
           'https://www.youtube.com/embed/videoseries?list=PLo3pNg0eiPc9QucHWnf-msi4iZZksjwP5'
         ],
         numVideos : 0,
@@ -135,8 +133,7 @@
         document.getElementById('frame').src = this.videos[this.pos - 1];
         this.pos -= 1;
       },
-      modified(){        
-        
+      modified(){      
         this.url = this.url.replace('watch?v=','embed/').split("&")[0];
         document.getElementById('video').src = this.url;
         this.videos.push(this.url);
@@ -157,3 +154,19 @@
     }
   }
 </script>
+<style>
+  .iframe-container {
+    overflow: hidden;
+    padding-top: 56.25%; /* 16:9*/
+    position: relative;
+  }
+
+  .iframe-container iframe {
+    border: 0;
+    height: 90%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 90%;
+  }
+</style>

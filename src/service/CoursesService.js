@@ -5,7 +5,17 @@ export default class UserService {
 
     url = "http://localhost:8080/courseController/";
     url2 = "http://localhost:8080/lessonController/";
+    url3 = "http://localhost:8080/LearningResourceController/";
 
+    addCourse(course){
+        return axios.post(this.url+"addCourse", course)
+    }
+    addLesson(lesson){
+        return axios.post(this.url2+"addLessons",lesson)
+    }
+    addResource(resource){
+        return axios.post(this.url3+"addResources", resource)
+    }
     add(Course){
         return axios.post(
             this.url +
@@ -37,17 +47,22 @@ export default class UserService {
         return axios.get(this.url2+"getLessonByCourseId/"+id)
     }
     addLessons(id, Lessons){
-        console.log(id);
-        console.log(Lessons);
         for (let index = 0; index < Lessons.length; index++) {
             
-                axios.post(this.url2+"editLessonByIdKX?id="+Lessons[index].id+"&title="+Lessons[index].title+"&description="+Lessons[index].description)
-                .then(data=>{console.log(data)})    
-                .catch(error => {
+            axios.post(this.url2+"editLessonByIdKX?id="+Lessons[index].id+"&title="+Lessons[index].title+"&description="+Lessons[index].description)
+                .then(data=>{
+                    for (let i= 0; i < Lessons[index].resources.length; i++) {
+                        axios.post(this.url3 + "addResource/"+Lessons[index].id, Lessons[index].resources[i]);                           
+                    }
+                    console.log(Lessons[index]);
+                }).catch(error => {
                     axios.post(this.url2+"addLessonKX?Courseid="+id+"&title="+Lessons[index].title+"&description="+Lessons[index].description)
-                    .then(data=>{console.log(data)});
+                    .then(data=>{
+                        for (let i= 0; i < Lessons[index].resources.length; i++) {
+                            axios.post(this.url3 + "addResource/"+Lessons[index].id, Lessons[index].resources[i]);                           
+                        }
+                    });
                 })
-            
         }
     }
     deleteLesson(id){

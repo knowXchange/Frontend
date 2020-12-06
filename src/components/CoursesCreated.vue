@@ -22,7 +22,7 @@
             <Dialog :visible.sync="displayCreate" header="Crear Curso" :modal="true" :style="{width: '90vw'}">
                 <div class="p-field p-fluid">
                     <h5 class="p-text-left">Titulo del curso</h5>
-                    <InputText id="titulo" type="titulo" v-model="Course.title"/>
+                    <InputText id="titulo" type="titulo" v-model="course.title"/>
                     <small id="courseTitle-help" class="p-invalid" :hidden="htitle">Falta titulo.</small>
                 </div>
                 <div class="p-mr-2 p-mb-2 p-text-left">
@@ -34,15 +34,14 @@
                     
                 <div class="p-field p-fluid">
                     <h5 class="p-text-left">Descripcion</h5>
-                    <Textarea id="descripcion" type="descripcion" v-model="Course.description"/>
+                    <Textarea id="descripcion" type="descripcion" v-model="course.description"/>
                     <small id="courseDescription-help" class="p-invalid" :hidden="hdescription">Falta descripcion.</small>
                 </div>                    
                 <div>
                     <Button class="p-text-left p-mr-2 p-mb-4" label="Añadir Leccion" icon="pi pi-plus" @click="displayLesson = true"/>                        
                 </div>  
                 <small id="lessonTable-help" class="p-invalid" :hidden="hlessonTable">Agregue al menos una leccion</small>                  
-                <DataTable ref="dt" :value="lessons" :selection.sync="courseSelection" dataKey="id" :paginator="true" :rows="10">                
-                    <Column field="id" header="ID"></Column>
+                <DataTable ref="dt" :value="lessons" :selection.sync="courseSelection" :paginator="true" :rows="10">                
                     <Column field="title" header="Titulo"></Column>
                     <Column :exportable="false">
                         <template  #body="slotProps">
@@ -59,25 +58,67 @@
             <Dialog :visible.sync="displayLesson" header="Editor de Leccion" :modal="true" :style="{width: '90vw'}">
                 <div class="p-field p-fluid p-text-left">                        
                     <h5>Titulo</h5>
-                    <InputText id="LessonTitle" v-model="lessonDT.title"/>
+                    <InputText id="LessonTitle" v-model="lesson.title"/>
                     <small id="lessonTitle-help" class="p-invalid" :hidden="hlessonTitle">Falta Titulo de la Leccion.</small>
                 </div>
                 <div class="p-field p-fluid p-text-left">
                     <h5>Descripcion</h5>
-                    <Editor v-model="lessonDT.description" editorStyle="height: 320px"/>
+                    <Editor v-model="lesson.description" editorStyle="height: 320px"/>
                     <small id="lessonDescription-help" class="p-invalid" :hidden="hlessonDescription">Falta la descripcion de la leccion.</small>
                 </div>
                 <div class="p-mr-2 p-mb-2 p-text-left">
-                    <h5>Añadir Recursos</h5>
-                    <Dropdown v-model="selectedResource" :options="resources" optionLabel="type" placeholder="Tipo de recurso" class="p-mr-2"/>
-                    <Dropdown v-model="selectedSource" :options="source" optionLabel="source" placeholder="Fuente" class="p-mr-2"/>
-                    <InputText  placeholder="URL" v-model="url" class="p-mr-2"/>
-                    <Button label="Añadir" class="p-button-rounded p-button-warning"/>
-                    <small id="courseFilter-help" class="p-invalid" :hidden="hfilter">Por favor clasifique el curso.</small>
-                </div>
+                    <h5>Añadir Recursos</h5><br/>
+                    <div class="p-grid p-ml-2">
+                        <div class="p-mr-4">
+                            Tipo de Recurso
+                            <div v-for="resource of resourcesType" :key="resource.id" class="p-field-checkbox">
+                                <Checkbox :id="resource.id" name="resource" :value="resource.type" v-model="selectedResource" @change="checkedRs(resource.type)"/>
+                                <label :for="resource.id">{{resource.type}}</label>
+                            </div>
+                        </div>
+                        <div>
+                            Fuente
+                            <div v-for="sr of source" :key="sr.id" class="p-field-checkbox">
+                                <Checkbox :id="sr.id" name="resource" :value="sr.source" v-model="selectedSource" @change="checkedSr(sr.source)" :disabled="selectedResource[0] != 'Video'"/>
+                                <label :for="sr.id">{{sr.source}}</label>
+                            </div>
+                        </div>                                              
+                    </div>
+                    <DataTable class="p-mb-4" ref="dt" :value="resources" :paginator="true" :rows="10">                
+                        <Column field="Type" header="Tipo"></Column>
+                        <Column header="Titulo">
+                            <template #body="slotProps">
+                                <div class="p-text-nowrap p-text-truncate" style="width: 10rem">{{slotProps.data.name}}</div>                               
+                            </template>
+                        </Column>
+                        <Column header="URL">
+                            <template #body="slotProps">
+                                <div class="p-text-nowrap p-text-truncate" style="width: 10rem">{{slotProps.data.link}}</div>                               
+                            </template>
+                        </Column>
+                        <Column :exportable="false">
+                            <template #body="slotProps">
+                                <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="deleteResourse(slotProps.data)"/>                                
+                            </template>
+                        </Column>
+                    </DataTable>                                         
+                    <InputText placeholder="Nombre" v-model="resource.name" class="p-mr-2"/>
+                    <InputText placeholder="URL" v-model="resource.link" class="p-mr-2"/>
+                    <Button label="Ver" class="p-button-rounded p-button-success" @click="preview()"/>
+                    <Button label="Añadir" class="p-button-rounded p-button-success" @click="addRs()"/>
+                    <div>
+                        <small id="lessonTitle-help" class="p-invalid" :hidden="hResource">Seleccione el tipo de recurso</small>
+                    </div>
+                    <div class="iframe-container p-mt-4">
+                        <iframe id="video" width="200" height="100" src="resource.link" 
+                            frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                            loading="lazy" allowfullscreen>  
+                        </iframe>
+                    </div>
+                </div>                
                 <template #footer>
                     <Button label="Guardar" class="p-button-rounded p-button-warning" @click="newLesson()"/>
-                    <Button label="Cancelar" class="p-button-rounded p-button-danger" @click="displayLesson = false"/>
+                    <Button label="Cancelar" class="p-button-rounded p-button-danger" @click="displayLesson = false; resetLessonFields()"/>
                 </template>
             </Dialog>
         </div>
@@ -98,38 +139,31 @@ export default {
             courseSelection: null,
             displayCreate: false,
             displayLesson: false,
-            Course:{
-                title:"",
-                description:"",
-                tokens: 0,
-                branchId:0
-            }, 
+            courses: [],
+            course:{}, 
             lessons:[],
-            courseDT:{},
-            lessonDT:{
-                title: "",
-                description:"",
-            },
+            lesson:{},            
+            resources:[],
+            resource: {},
             htitle: true,
             hfilter: true,
             hdescription: true, 
             hlessonTitle: true,
             hlessonDescription: true,
-            hlessonTable: true,         
-            courses: [],
-            BLabel: "Crear",
-            selectedResource: null,
-            selectedSource: null,
-            resources:[
-                {id:0,type:'Video'},
-                {id:1,type:'Imagen'},
-                {id:2,type:'Documento'},
+            hlessonTable: true,    
+            hResource: true,            
+            BLabel: "Crear",            
+            selectedResource: [],
+            selectedSource: [],
+            resourcesType:[
+                {id:0, type: 'Video'},
+                {id:1, type: 'Imagen'},
+                {id:2, type: 'Documento'}
             ],
             source:[
                 {id:0, source:'YouTube'},
                 {id:1, source:'Google'}
             ],
-            url: null,
         }
     },
     kbService: null,
@@ -147,7 +181,6 @@ export default {
         })
         this.coursesService.getCreated().then(
             data=>{
-                console.log(data.data);
                 this.courses = data.data;
             }
         );
@@ -159,17 +192,17 @@ export default {
         })
         },
         openCreate: function(){
-            this.resetFields();
+            this.resetCourseFields();
             this.BLabel = "Crear";
             this.displayCreate=true;
         },
         closeCreate: function(){
             this.displayCreate=false;
-            this.resetFields();
+            this.resetCourseFields();
         },
-        createCourse: function(course, lessons){  
+        createCourse: function(course, lessons){
             if(this.selectedBranch != null){
-                this.Course.branchId = this.selectedBranch.id;
+                this.course.branchId = this.selectedBranch.id;
                 this.coursesService.add(course).then(data=>{
                     this.coursesService.addLessons(data.data.id,lessons);
                     this.courses.push(data.data);                    
@@ -177,20 +210,10 @@ export default {
                 this.displayCreate=false;                            
             }    
         },
-        getCreated: function(){
-            this.created=[];
-            this.coursesService.getCreated().then(data=>{
-                    
-                    for (let index = 0; index < data.data.length; index++) {
-                        
-                        this.courses.push(data.data[index]);                    
-                    }    
-                });
-        },
         editCourse: function(course){
-            this.Course = course;
+            this.course = course;
             this.coursesService.getLessons(course.id).then(data=>{
-                this.lessons = data.data
+                this.lessons = data.data;
             });
             this.BLabel = "Actualizar";
             this.displayCreate = true;
@@ -205,27 +228,27 @@ export default {
             this.coursesService.addLessons(course.id, lessons);
             this.displayCreate = false;
         },
-        deleteCourse: function(course){   
-            this.courseDT=course;        
+        deleteCourse: function(course){         
             this.coursesService.delete(course.id);
-            this.courses = this.courses.filter(val =>val.id !== this.courseDT.id);
+            this.courses = this.courses.filter(val =>val.id !== course.id);
         },
         newLesson: function(){
-            if(this.lessonDT.title == null || this.lessonDT.title=="")
+            if(this.lesson.title == null || this.lesson.title=="")
                 this.hlessonTitle = false;
             else this.hlessonTitle = true;
-            if(this.lessonDT.description == null || this.lessonDT.description=="")
+            if(this.lesson.description == null || this.lesson.description=="")
                 this.hlessonDescription = false;
             else this.hlessonDescription = true;            
             if(this.hlessonTitle && this.hlessonDescription){
-                if(this.lessonDT.id==null){
-                    this.lessonDT.id = this.lessons.length + 1;
-                    this.lessons.push(new Object(this.lessonDT));
+                this.lesson.resources = this.resources;
+                if(this.lesson.id==null){
+                    var temp = this.lesson
+                    this.lessons.push(temp);
                 }
                 else{
                     for (let index = 0; index < this.lessons.length; index++) {
-                        if(this.lessons[index].id == this.lessonDT.id){
-                            this.lessons[index] = this.lessonDT;
+                        if(this.lessons[index].id == this.lesson.id){
+                            this.lessons[index] = this.lesson;
                             break;
                         }         
                     }
@@ -233,54 +256,132 @@ export default {
                 if(this.lessons.length == 0) this.hlessonTable = false;
                 else this.hlessonTable = true;   
                 this.displayLesson = false;       
-                this.lessonDT = {};
+                this.lesson = {};
             }
         },
         deleteLesson: function(lesson){
-            if(this.Course.id != null)
-                this.coursesService.deleteLesson(lesson.id);  
-            this.lessonDT=lesson;
-            this.lessons = this.lessons.filter(val =>val.id !== this.lessonDT.id);
+            if(this.course.id != null)
+                this.coursesService.deleteLesson(lesson.id);
+            this.lessons = this.lessons.filter(val =>val.id !== lesson.id);
         },
         editLesson: function(Lesson){
-            this.lessonDT = Lesson;
+            this.lesson = Lesson;
+            this.resources = Lesson.resources;
+            console.log(Lesson)
             this.displayLesson = true;
         },
         courseAction: function(){   
-            if(this.Course.title=="" || this.Course.title == null)this.htitle=false;
+            if(this.course.title=="" || this.course.title == null)this.htitle=false;
             else this.htitle=true; 
             if(this.selectedArea == null || this.selectedBranch==null)
                 this.hfilter = false;
             else this.hfilter = true;           
-            if(this.Course.description==null || this.Course.description=="")this.hdescription=false;
+            if(this.course.description==null || this.course.description=="")this.hdescription=false;
             else this.hdescription=true;
             if(this.lessons.length == 0) this.hlessonTable = false;
             else this.hlessonTable = true;
             if(this.htitle && this.hdescription && this.hlessonTable){ 
-                
-                if(this.Course.id == null){
-                    this.createCourse(this.Course, this.lessons);
+                if(this.course.id == null){
+                    this.createCourse(this.course, this.lessons);
                 }
-                else this.updateCourse(this.Course, this.lessons);
-                this.resetFields();
+                else this.updateCourse(this.course, this.lessons);
+                this.resetCourseFields();
             }
         },
-        resetFields: function(){            
+        checkedRs(resource){
+            this.selectedResource = [resource]
+        },
+        checkedSr(source){
+            this.selectedSource = [source]
+        },
+        addRs(){
+            if(this.selectedResource[0] != null){
+                this.hResource = true;
+                if(this.selectedResource[0] == 'Video'){  
+                    if(this.selectedSource[0] == 'YouTube') {  
+                        this.resource.link = this.resource.link.replace('watch?v=','embed/').split("&")[0];
+                        this.resource.type = this.selectedResource[0];
+                        this.resources.push(this.resource);
+                        this.resource = {};
+                    }
+                    else if(this.selectedSource[0] == 'Google Drive'){
+
+                    }
+                    alert('Video Añadido')
+                }
+                else if(this.selectedResource[0] == 'Imagen'){      
+                    this.resource.type = this.selectedResource[0];
+                    this.resources.push(this.resource);
+                    this.resource = {};
+                    alert('Imagen Añadida');
+                }
+                else if(this.selectedResource[0] == 'Documento'){ 
+                    this.resource.type = this.selectedResource[0];
+                    this.resources.push(this.resource);
+                    this.resource = {};
+                    alert('Documento Añadido');               
+                }
+            }
+            else this.hResource = false;
+        },
+        preview(){
+            if(this.selectedResource[0] == 'Video'){  
+                if(this.selectedSource[0] == 'YouTube') {  
+                    this.resource.link = this.resource.link.replace('watch?v=','embed/').split("&")[0];                    
+                    document.getElementById('video').src = this.resource.link;
+                }
+                else if(this.selectedSource[0] == 'Google Drive'){
+
+                }
+            }
+            else if(this.selectedResource[0] == 'Imagen'){
+                document.getElementById('video').src = this.resource.url;
+            }
+            else if(this.selectedResource[0] == 'Documento'){                
+                document.getElementById('video').src = this.resource.url;                         
+            }           
+
+        },
+        deleteResourse: function(resource){
+            this.resources = this.resources.filter(val =>val !== resource);
+        },        
+        resetCourseFields: function(){            
             this.htitle = true;
             this.hfilter = true;
-            this.hdescription= true;
-            this.hlessonTitle= true;
-            this.hlessonDescription= true;
+            this.hdescription= true;            
             this.hlessonTable= true;
             this.selectedArea = null;
             this.selectedBranch = null;
-            this.Course = {};
-            this.lessons = [];     
-            this.lessonDT = {};     
-            this.courseDT = {}; 
+            this.course = {};
+            this.lessons = []; 
+            
+        },
+        resetLessonFields(){
+            this.hlessonTitle= true;
+            this.hlessonDescription= true;
+            this.lesson = {};
+            this.resources=[],
+            this.resource={},
+            this.selectedResource = [],
+            this.selectedSource = [],
+            this.hResource = true
         }
     }    
 }
 </script>
 <style>
+  .iframe-container {
+    overflow: hidden;
+    padding-top: 56.25%; /* 16:9*/
+    position: relative;
+  }
+
+  .iframe-container iframe {
+    border: 0;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
 </style>
