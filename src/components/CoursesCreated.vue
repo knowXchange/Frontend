@@ -38,14 +38,14 @@
                     <small id="courseDescription-help" class="p-invalid" :hidden="hdescription">Falta descripcion.</small>
                 </div>                    
                 <div>
-                    <Button class="p-text-left p-mr-2 p-mb-4" label="Añadir Leccion" icon="pi pi-plus" @click="displayLesson = true"/>                        
+                    <Button class="p-text-left p-mr-2 p-mb-4" label="Añadir Leccion" icon="pi pi-plus" @click="resetLessonFields() ;displayLesson = true"/>                        
                 </div>  
                 <small id="lessonTable-help" class="p-invalid" :hidden="hlessonTable">Agregue al menos una leccion</small>                  
                 <DataTable ref="dt" :value="lessons" :selection.sync="courseSelection" :paginator="true" :rows="10">                
                     <Column field="title" header="Titulo"></Column>
                     <Column :exportable="false">
                         <template  #body="slotProps">
-                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning" @click="editLesson(slotProps.data)"/>
+                            <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning" @click="editLesson(slotProps.index,slotProps.data)"/>
                             <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="deleteLesson(slotProps.data)"/>                                
                         </template>
                     </Column>
@@ -85,7 +85,7 @@
                         </div>                                              
                     </div>
                     <DataTable class="p-mb-4" ref="dt" :value="resources" :paginator="true" :rows="10">                
-                        <Column field="Type" header="Tipo"></Column>
+                        <Column field="type" header="Tipo"></Column>
                         <Column header="Titulo">
                             <template #body="slotProps">
                                 <div class="p-text-nowrap p-text-truncate" style="width: 10rem">{{slotProps.data.name}}</div>                               
@@ -132,6 +132,7 @@ export default {
     name: 'CoursesCreated',
     data(){
         return{
+            index: null,
             selectedArea: null,
             area:[],
             selectedBranch: null,
@@ -202,11 +203,12 @@ export default {
         },
         createCourse: function(course, lessons){
             if(this.selectedBranch != null){
-                this.course.branchId = this.selectedBranch.id;
-                this.coursesService.add(course).then(data=>{
-                    this.coursesService.addLessons(data.data.id,lessons);
-                    this.courses.push(data.data);                    
-                });                 
+                this.coursesService.addCourse(localStorage.getItem("id"),this.selectedBranch.id,course).then(data=>{
+                    console.log(data);
+                    this.coursesService.addLessons(data.data,lessons);
+                    this.course.id = data.data;                                        
+                }); 
+                this.courses.push(this,course);                
                 this.displayCreate=false;                            
             }    
         },
@@ -241,33 +243,30 @@ export default {
             else this.hlessonDescription = true;            
             if(this.hlessonTitle && this.hlessonDescription){
                 this.lesson.resources = this.resources;
-                if(this.lesson.id==null){
-                    var temp = this.lesson
-                    this.lessons.push(temp);
+                if( this.index == null ){
+                    var temp = this.lesson;
+                    this.lessons.push( temp );
                 }
                 else{
-                    for (let index = 0; index < this.lessons.length; index++) {
-                        if(this.lessons[index].id == this.lesson.id){
-                            this.lessons[index] = this.lesson;
-                            break;
-                        }         
-                    }
+                    this.lessons[this.index] = this.lesson;
                 } 
                 if(this.lessons.length == 0) this.hlessonTable = false;
                 else this.hlessonTable = true;   
                 this.displayLesson = false;       
                 this.lesson = {};
+                this.index = null;
             }
         },
         deleteLesson: function(lesson){
             if(this.course.id != null)
                 this.coursesService.deleteLesson(lesson.id);
-            this.lessons = this.lessons.filter(val =>val.id !== lesson.id);
+            this.lessons = this.lessons.filter(val =>val !== lesson);
         },
-        editLesson: function(Lesson){
+        editLesson: function(index, Lesson){
+            this.resetLessonFields();
+            this.index = index;
             this.lesson = Lesson;
             this.resources = Lesson.resources;
-            console.log(Lesson)
             this.displayLesson = true;
         },
         courseAction: function(){   
@@ -280,11 +279,8 @@ export default {
             else this.hdescription=true;
             if(this.lessons.length == 0) this.hlessonTable = false;
             else this.hlessonTable = true;
-            if(this.htitle && this.hdescription && this.hlessonTable){ 
-                if(this.course.id == null){
-                    this.createCourse(this.course, this.lessons);
-                }
-                else this.updateCourse(this.course, this.lessons);
+            if(this.htitle && this.hdescription && this.hlessonTable){                 
+                this.createCourse(this.course, this.lessons);
                 this.resetCourseFields();
             }
         },
@@ -343,7 +339,17 @@ export default {
 
         },
         deleteResourse: function(resource){
-            this.resources = this.resources.filter(val =>val !== resource);
+            if(resource.id == null)
+                this.resources = this.resources.filter(val =>val !== resource);
+            else{
+                this.coursesService.deleteResource(resource.id).then(data=>{
+                    if(data.data == 'Deleted')
+                        this.resources = this.resources.filter(val =>val !== resource);
+                    else alert('La operacion no tuvo exito');
+                }).catch(error=>{
+                    alert('error en el servidor')
+                });
+            }
         },        
         resetCourseFields: function(){            
             this.htitle = true;
