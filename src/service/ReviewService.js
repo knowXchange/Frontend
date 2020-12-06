@@ -10,5 +10,8 @@ export default class ReviewService {
     getAllReseñas(courseId){
         return axios.get(this.url + 'getReviewsByPathVariable/' + courseId)
     }
+    exits(userId, courseId){
+        return axios.get(this.url + 'didUserPostedReviewByPathVariable/'+userId+'/'+courseId);
+    }
   
 }

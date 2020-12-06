@@ -19,7 +19,7 @@
             <DataTable :value="curso" :paginator="true" :rows="3" :selection.sync="idCursoSeleccion" dataKey="id">           
                 
                 <Column field="title" header="Nombre del curso"></Column>
-                <Column field="description" header="Descripción del curso"></Column>
+                <Column field="tokensCost" header="Costo en Tokens"></Column>
                 <Column header="Puntuacion">
                     <template #body="slotProps">
                         <Rating :value="Math.round(slotProps.data.averageScore)" :readonly="true" :cancel="false" />
@@ -58,7 +58,6 @@
                                          
                                         <h3>{{slotProps.data.opiningUser.name}}</h3>
                                         <Rating :value="Math.round(slotProps.data.grade)" :readonly="true" :cancel="false" />
-                                        <h5 class="p-mb-1">Calificación {{slotProps.data.grade}}</h5>
                                         <h6 class="p-mt-0 p-mb-3">{{slotProps.data.description}}</h6>
                                        
                                     </div>
@@ -211,6 +210,7 @@ import Topbar from '../components/topbar.vue';
                 this.course = course;
                 this.obtenerReseñas();                
                 this.varSearchService.getLessons(course.id).then(data=>{
+                    console.log(data);
                     this.lessons = data.data
                 });
                 this.displayMaximizable = true;                
@@ -228,17 +228,11 @@ import Topbar from '../components/topbar.vue';
                 if(localStorage.getItem('id')!=0)
                     this.userService.registerCourse(localStorage.getItem('id'),this.course.id)
                     .then(data=>{
-                        console.log(data);
-                        if (data.status === 200){
-                            this.message.title = 'Inscripcion Exitosa';
-                            this.message.content = 'La inscripcion al curso fue exitosa, podras encontrar el curso en tu perfil >> cursos >> cursos inscritos'
+                        console.log(data);                        
+                            this.message.title = "Resultado de la operacion";
+                            this.message.content = data.data;
                             this.message.display=true;
-                        }
-                        else{
-                            this.message.title = 'Inscripcion Fallida';
-                            this.message.content = 'La inscripcion al curso no fue exitosa';
-                            this.message.display=true;
-                        }
+                        
                     });          
             }
             

@@ -17,9 +17,8 @@
                         <div>
                           <h4 class="p-mb-1">{{slotProps.data.title}}</h4>
                           <h6 class="p-mt-0 p-mb-3">{{slotProps.data.description}}</h6>
-                          
-                          <div class="car-buttons p-mt-5">
-                             
+                          <Rating :value="Math.round(slotProps.data.averageScore)" :readonly="true" :cancel="false" />
+                          <div class="car-buttons p-mt-5">                             
                               <Button icon="pi pi-search" class="p-button p-button-rounded p-mr-2" @click="openMaximizable(slotProps.data)" />
                             
                           </div>

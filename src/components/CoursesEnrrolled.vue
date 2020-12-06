@@ -27,7 +27,7 @@
                 <Rating v-model="grade" :cancel="false"/>
                 <div class="p-text-left">
                      <Textarea v-model="reseñas.text" placeholder="Dejanos tu opinión respecto al curso" rows="3" cols="30" style="width: 95%"/>
-                     <Button label='Publicar' class="p-button-rounded  p-button-success" @click="publishReseña()"/>
+                     <Button label='Publicar' class="p-button-rounded  p-button-success" @click="publishReseña()" :disabled="dButton"/>
                 </div>
         </Dialog>
         <Dialog  
@@ -86,7 +86,6 @@
                 <strong> Zona de Preguntas</strong>
             </div>
             <div class="p-text-left">
-                <InputText v-model="question.topic" id="topic" placeholder="Asunto" class="p-mb-2"/>
                 <Textarea v-model="question.title" placeholder="Cual es tu pregunta?" rows="3" cols="30" style="width: 95%"/>
                 <Button label='Publicar' class="p-button-rounded  p-button-success" @click="publish()"/>
             </div>
@@ -112,7 +111,7 @@
                 </transition-group>
             </div>         
         </Dialog>
-        <Dialog :visible.sync="displayReply" :header.sync="question.topic" :modal="true" :style="{width: '80vw'}">
+        <Dialog :visible.sync="displayReply" header='Publicar Respuesta' :modal="true" :style="{width: '80vw'}">
             {{question.text}}            
             <Textarea v-model="replyDialog.text" placeholder="Cual es tu respuesta" rows="3" cols="30" style="width: 95%"/>
             <Button label='Publicar' class="p-button-rounded  p-button-success" @click="reply()"/>
@@ -129,6 +128,7 @@ export default {
         return{
             reseñas:{},
             grade: null,
+            dButton: false,
             url: null,
             courseSelection: null,
             lessonSelection: null,
@@ -152,7 +152,6 @@ export default {
                     asking_user: {
                         name: ""
                     },
-                    topic: "",
                     text: "",
                     replys:[]
                 }
@@ -186,9 +185,9 @@ export default {
             },
         showReseñas: function(course){
             this.course = course; 
-            this.coursesService.getLessons(course.id).then(data=>{
+            this.RService.exits(localStorage.getItem('id'),this.course.id).then(data=>{
                 console.log(data.data)
-                this.lessons = data.data
+                this.dButton = data.data;
             });
             this.displayReseñas = true;
         },
@@ -199,16 +198,6 @@ export default {
                 this.lessons = data.data
             });
             this.displayLessons = true;
-        },
-        openReseña: function(lesson){                         
-            this.displayLessons = false;
-            this.lesson = lesson;
-            this.posLesson = this.lessons.findIndex(element=> element==lesson);
-            this.getQuestions();            
-            this.displayReseñas = true;
-            console.log(this.questions);
-            setTimeout(() => document.getElementById('description').innerHTML = this.lesson.description, 0);
-            
         },
         openLesson: function(lesson){                         
             this.displayLessons = false;

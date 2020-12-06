@@ -1,7 +1,12 @@
 <template>
     <div>
         <br class="p-mb-4"/>
-        <div style="margin: 0 auto; width: 80%">            
+        <div style="margin: 0 auto; width: 80%">    
+
+            <Panel header='Tokens Disponibles' class="p-mb-4">
+                <i class="pi pi-money-bill"></i>
+                <strong>{{user.tokens}}</strong>
+            </Panel>
             <Panel header='Mi Informacion' class="p-mb-4">  
                 <div class="p-field p-fluid">          
                     <h5 class="p-text-left">Nombre de Usuario</h5>
