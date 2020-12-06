@@ -97,7 +97,8 @@
                         </div>  
                         <div style="margin-right:0;">                     
                             <Button label='Responder' class="p-button-rounded  p-button-success" @click="openReply(col)"/>  
-                        </div>                        
+                        </div>           
+                        {{questions[0].replys}}            
                         <div style="margin-top: .5em">
                             <transition-group name="dynamic-box" tag="div">
                                 <div v-for="ans of col.replys" :key="ans.id" class="p-col">
@@ -194,7 +195,6 @@ export default {
         showLessons: function(course){
             this.course = course; 
             this.coursesService.getLessons(course.id).then(data=>{
-                console.log(data.data)
                 this.lessons = data.data
             });
             this.displayLessons = true;
@@ -204,9 +204,9 @@ export default {
             this.lesson = lesson;
             this.resource = this.lesson.resorces
             this.posLesson = this.lessons.findIndex(element=> element==lesson);
-            this.getQuestions();            
+            this.getQuestions();    
+            this.getAnswers();        
             this.displayLesson = true;
-            console.log(this.questions);
             setTimeout(() => document.getElementById('description').innerHTML = this.lesson.description, 0);
             
         },
@@ -238,7 +238,7 @@ export default {
             this.replyDialog.questionId = this.question.id;
             var temp = this.question
             this.qService.postReply(this.replyDialog).then(
-                data=>{   
+                data=>{
                     if(this.questions.find(element => element == temp).replys == null)
                         this.questions.find(element => element == temp).replys = [data.data];
                     else this.questions.find(element => element == temp).replys = [...this.questions.find(element => element == temp).replys, data.data];
@@ -252,25 +252,27 @@ export default {
         publish: function(){
             this.qService.postQuestion(this.question, this.lesson.id).then(
                 data => {
-                    console.log(data.data);
                     this.questions = [...this.questions,data.data];
                 }
             );
         },
         getQuestions: function(){
             this.qService.getQuestions(this.lesson.id).then(
-                data => { 
-                    data.data.forEach(element =>{
-                        this.qService.getReplys(element.id).then(
-                            replys=>{
-                                element.replys = replys.data;
-                            }
-                        );
-                    });
-                    setTimeout(() => this.questions = data.data, 200);
-                    
+                data => {
+                    this.questions = data.data;                                     
                 }
             );
+        },
+        getAnswers: function(){
+            var temp = this.questions;
+            console.log(this.questions);
+            this.questions.forEach(element => {
+                this.qService.getReplys(element.id).then(
+                    replys =>{
+                        element.replys = replys.data;
+                    }
+                );                        
+            });
         },
         viewResource(resource){
             if(resource.type == 'Video')
