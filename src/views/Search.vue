@@ -5,12 +5,12 @@
             <Menubar >
                 <template #start :style="{'margin':auto}">
                     Filtro:
-                    <Dropdown @change ="buscarRama" v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2"/>
+                    <Dropdown @change ="buscarRama" v-model="selectedArea" :options="area" optionLabel="title" placeholder="Area"  class="p-mr-2 align-middle"/>
                     <span class="p-input-icon-left">
                         <i class="pi pi-search" />
-                        <InputText  type="text" v-model="entrada" />                    
+                        <InputText class ="align-middle" type="text" v-model="entrada" />                    
                     </span>   
-                    <Button label="Buscar"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
+                    <Button label="Buscar"  class="p-button-rounded p-button-success p-ml-2" :style="{'margin-left': '0 .5em'}" @click="buscarSubcadena"/> 
                 </template>
             </Menubar>   
         </div>
