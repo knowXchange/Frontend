@@ -20,6 +20,7 @@ import Menubar from 'primevue/menubar';
 import Editor from 'primevue/editor';
 import Carousel from 'primevue/carousel';
 import Rating from 'primevue/rating';
+import DataView from 'primevue/dataview';
 
 
 import 'primevue/resources/themes/saga-blue/theme.css';
@@ -53,6 +54,7 @@ Vue.component('Toolbar', Toolbar);
 Vue.component('Menubar', Menubar);
 Vue.component('Editor', Editor);
 Vue.component('Carousel', Carousel);
+Vue.component('DataView', DataView);
 
 new Vue({
   router,

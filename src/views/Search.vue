@@ -41,6 +41,29 @@
                     <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">                
                         <Column field="title" header="Titulo"></Column>  
                     </DataTable>
+                    <br>
+                    <div class="p-text-left">
+                        <h5>Reseñas</h5>
+                    </div>             
+                       
+                    <Carousel :value="reseñas" :numVisible="1" :numScroll="1" orientation="vertical" verticalViewPortHeight="200px"
+                    style="max-width: auto; margin-top: 1em">           
+                        <template #item="slotProps">
+                            <div class="product-item">
+                                <div class="product-item-content">
+                                    <div>
+                                         
+                                        <h3>{{slotProps.data.opiningUser.name}}</h3>
+                                        <Rating :modelValue=slotProps.data.grade :readonly="true" :cancel="false" />
+                                        <h5 class="p-mb-1">Calificación {{slotProps.data.grade}}</h5>
+                                        <h6 class="p-mt-0 p-mb-3">{{slotProps.data.description}}</h6>
+                                       
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </template>
+                    </Carousel>
                                     
 
                 </div>  
@@ -61,6 +84,7 @@ import SearchService from '../service/CoursesService';
 import topbar from '../components/topbar' 
 import UserService from '../service/UserService' 
 import KBService from '../service/KBService'
+import ReviewService from '../service/ReviewService'
   
     export default {
     
@@ -74,7 +98,7 @@ import KBService from '../service/KBService'
 
         data() {        
             return {
-            
+            reseñas: [],
             selectedArea: null,
             area:[],
             selectedBranch: null,
@@ -132,9 +156,11 @@ import KBService from '../service/KBService'
             this.varSearchService = new SearchService(); 
             this.userService = new UserService();
             this.kbService = new KBService();
+            this.ReviewService = new ReviewService();
             
         },
         mounted(){
+            
             this.getAllCourses();
             this.kbService.getAllK().then(data => {
                 this.area = data.data;
@@ -144,7 +170,12 @@ import KBService from '../service/KBService'
             })
         },
         methods:{
-          
+            obtenerReseñas(){
+                this.ReviewService.getAllReseñas(this.course.id).then(data=>{
+                    this.reseñas = data.data;
+                    console.log(this.reseñas)
+                });
+            },
             searchBranch: function(){
                 this.kbService.getBbyK(this.selectedArea.title).then(data=>{
                     this.branch = data.data;
@@ -172,6 +203,7 @@ import KBService from '../service/KBService'
                 }
             },
             openMaximizable(course) {
+                this.obtenerReseñas();
                 this.course = course;
                 this.varSearchService.getLessons(course.id).then(data=>{
                     this.lessons = data.data

@@ -7,5 +7,8 @@ export default class ReviewService {
         return axios.post(this.url + 'addReviewByPathVariable/' + reseñas + '/' + grade + '/' + localStorage.getItem('id') + '/' + courseId);
     }
     
+    getAllReseñas(courseId){
+        return axios.get(this.url + 'getReviewsByPathVariable/' + courseId)
+    }
   
 }
