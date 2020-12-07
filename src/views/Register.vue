@@ -5,7 +5,7 @@
         <Panel header='Registro de usuario'>  
             <div class="p-field p-fluid">          
                 <h5 class="p-text-left">Nombre de Usuario</h5>
-                <InputText id="username" type="text" v-model="user.name"/>
+                <InputText id="username" type="text" v-model="user.name" @keydown.space.prevent/>
                 <small id="username2-help" class="p-invalid" :hidden="huser">Falta nombre de usuario.</small>
             </div>
             <div class="p-field p-fluid">

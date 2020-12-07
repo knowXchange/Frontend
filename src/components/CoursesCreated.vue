@@ -16,6 +16,7 @@
                     <template  #body="slotProps">
                         <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning" @click="editCourse(slotProps.data)"/>
                         <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="deleteCourse(slotProps.data)"/>
+                            <Button label="Ver Lecciones" class="p-button-raised p-button-text" @click="showReviews(slotProps.data)"/>  
                     </template>
                 </Column>
             </DataTable>
@@ -51,7 +52,7 @@
                     <Column :exportable="false">
                         <template  #body="slotProps">
                             <Button icon="pi pi-pencil" class="p-button-rounded p-button-warning" @click="editLesson(slotProps.index,slotProps.data)"/>
-                            <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="deleteLesson(slotProps.data)"/>                                
+                            <Button icon="pi pi-trash" class="p-button-rounded p-button-danger" @click="deleteLesson(slotProps.data)"/>                            
                         </template>
                     </Column>
                 </DataTable> 
@@ -128,16 +129,70 @@
             </Dialog>
         </div>
         <br class="p-mb-4"/>
+        <Dialog :visible.sync="displayReviews" :header.sync="course.title" :modal="true" :style="{width: '80vw'}">
+            <Carousel :value="reseñas" :numVisible="1" :numScroll="1" verticalViewPortHeight="200px"
+                style="max-width: auto; margin-top: 1em">           
+                <template #item="slotProps">
+                    <div class="product-item">
+                        <div class="product-item-content">
+                            <div>                                         
+                                <h3>{{slotProps.data.opiningUser.name}}</h3>
+                                <Rating :value="Math.round(slotProps.data.grade)" :readonly="true" :cancel="false" />
+                                <h6 class="p-mt-0 p-mb-3">{{slotProps.data.description}}</h6>                   
+                            </div>        
+                        </div>
+                    </div>
+                </template>
+            </Carousel>
+            <DataTable ref="dt" :value="lessons" :paginator="true" :rows="10">
+                <Column field="title" header="Lecciones"></Column>
+                <Column :exportable="false">
+                    <template  #body="slotProps">
+                        <Button label="Ver Preguntas" class="p-button-raised p-button-text" @click="openQuestions(slotProps.data.id);"/>                              
+                    </template>
+                </Column>
+            </DataTable>
+        </Dialog>
+        <Dialog :visible.sync="displayQuestions" header="Preguntas" :modal="true" :style="{width: '90vw'}">
+            <transition-group name="dynamic-box" tag="div" class="p-jc-end">
+                <div v-for="(col, index) of questions" :key="col.id" class="p-col p-jc-end">
+                    <div class="p-shadow-9 p-text-left p-mb-2">
+                        <strong>{{col.asking_user.name}}</strong><br/>{{col.text}}<br/>
+                    </div>  
+                    <div style="margin-right:0;">                     
+                        <Button label='Responder' class="p-button-rounded  p-button-success" @click="openReply(index, col)"/>  
+                    </div>           
+                    <div style="margin-top: .5em">
+                        <transition-group name="dynamic-box" tag="div">
+                            <div v-for="ans of col.replys" :key="ans.id" class="p-col">
+                                <div class="p-shadow-7 p-text-left" style="margin-left:auto; margin-right:0; width: 95%">
+                                    <strong>{{ans.personAnswering.name}}</strong><br/>{{ans.text}}
+                                </div>
+                            </div>
+                        </transition-group>
+                    </div>
+                </div>
+            </transition-group>            
+        </Dialog>
+        <Dialog :visible.sync="displayReply" header='Publicar Respuesta' :modal="true" :style="{width: '80vw'}">
+            {{question.text}}            
+            <Textarea v-model="replyDialog.text" placeholder="Cual es tu respuesta" rows="3" cols="30" style="width: 95%"/>
+            <Button label='Publicar' class="p-button-rounded  p-button-success" @click="reply()"/>
+        </Dialog>
     </div>   
 </template>
 <script>    
 import KBService from '../service/KBService' 
 import CoursesService from '../service/CoursesService'
+import QuestionService from '../service/QuestionService'
+import ReviewService from '../service/ReviewService' 
 export default {
     name: 'CoursesCreated',
     data(){
         return{
+            reseñas:[],
             index: null,
+            indexQuestion: null,
             selectedArea: null,
             area:[],
             selectedBranch: null,
@@ -145,6 +200,9 @@ export default {
             courseSelection: null,
             displayCreate: false,
             displayLesson: false,
+            displayReviews: false,
+            displayQuestions: false,
+            displayReply: false,
             courses: [],
             course:{}, 
             lessons:[],
@@ -171,13 +229,31 @@ export default {
                 {id:0, source:'YouTube'},
                 {id:1, source:'Google'}
             ],
+            questions:[
+                {
+                    id: 0,
+                    asking_user: {
+                        name: ""
+                    },
+                    text: "",
+                    replys:[]
+                }
+
+            ],
+            question: {},
+            replyDialog:{
+                text: null,
+            }
         }
     },
     kbService: null,
     coursesService: null,
+    qService: null,
     created(){
         this.kbService = new KBService();
         this.coursesService = new CoursesService();
+        this.qService = new QuestionService();
+        this.ReviewService = new ReviewService();
     },
     mounted(){
         this.kbService.getAllK().then(data => {
@@ -400,6 +476,55 @@ export default {
             this.selectedResource = [],
             this.selectedSource = [],
             this.hResource = true
+        },
+        showReviews: function(course){
+            this.course = course; 
+            this.ReviewService.getAllReseñas(this.course.id).then(data=>{
+                this.reseñas = data.data;
+                if(data.data.length == 0)
+                this.reseñas=[{opiningUser:{name:'Aun no hay reseñas Para esta leccion'},grade:0,description:':('}];
+                console.log(data.data);
+            });            
+            this.coursesService.getLessons(course.id).then(data=>{
+                this.lessons = data.data
+            });
+            this.displayReviews = true;
+        },
+        openQuestions(id){
+            this.qService.getQuestions(id).then(
+                data => { 
+                    data.data.forEach(element =>{
+                        this.qService.getReplys(element.id).then(
+                            replys=>{
+                                element.replys = replys.data;
+                            }
+                        );
+                    });
+                    setTimeout(() => this.questions = data.data, 200);                    
+                }
+            );
+            this.displayQuestions = true;
+        },
+        openReply: function(index, question){
+            this.indexQuestion = index;
+            this.question = question;
+            this.displayReply = true;          
+        },
+        reply: function(){
+            console.log(this.questions[this.indexQuestion])
+            this.replyDialog.userId = localStorage.getItem('id');
+            this.replyDialog.questionId = this.question.id;
+            var temp = this.question
+            this.qService.postReply(this.replyDialog).then(
+                data=>{
+                    if(this.questions[this.indexQuestion].replys == null)
+                        setTimeout(() => this.questions[this.indexQuestion].replys = [data.data],500);
+                    else this.questions[this.indexQuestion].replys = [ ...this.questions[this.indexQuestion].replys, data.data ];
+                }
+            );
+            this.displayReply = false;
+            this.replyDialog = {};
+            this.question = {};
         }
     }    
 }

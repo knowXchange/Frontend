@@ -248,7 +248,7 @@ export default {
                 data=>{
                     if(this.questions[this.indexQuestion].replys == null)
                         setTimeout(() => this.questions[this.indexQuestion].replys = [data.data],500);
-                    else this.questions[this.indexQuestion].replys = [ data.data, ...this.questions[this.indexQuestion].replys];
+                    else this.questions[this.indexQuestion].replys = [...this.questions[this.indexQuestion].replys, data.data];
                 }
             );
             this.displayReply = false;
@@ -272,8 +272,7 @@ export default {
                             }
                         );
                     });
-                    setTimeout(() => this.questions = data.data, 200);
-                    
+                    setTimeout(() => this.questions = data.data, 200);                 
                 }
             );
         },
