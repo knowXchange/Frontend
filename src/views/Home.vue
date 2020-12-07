@@ -8,21 +8,18 @@
     <br>
     
 
-        <div class="card">
+        
         <Carousel :value="courses" :numVisible="1" :numScroll="1">
            
-           <template #item="slotProps">
+           <template #item="slotProps">               
                <div class="product-item">
                   <div class="product-item-content">
                         <div>
-                          <h4 class="p-mb-1">{{slotProps.data.title}}</h4>
-                          <h6 class="p-mt-0 p-mb-3">{{slotProps.data.description}}</h6>
-                          <Rating :value="Math.round(slotProps.data.averageScore)" :readonly="true" :cancel="false" />
-                          <div class="car-buttons p-mt-5">                             
-                              <Button icon="pi pi-search" class="p-button p-button-rounded p-mr-2" @click="openMaximizable(slotProps.data)" />
-                            
-                          </div>
-                      </div>
+                            <h4 class="p-mb-3">{{slotProps.data.title}}</h4>
+                            <h6 class="p-mb-3">{{slotProps.data.description}}</h6>
+                            <Rating :value="Math.round(slotProps.data.averageScore)" :readonly="true" :cancel="false" />
+                            <Button icon="pi pi-search" class="p-button p-button-rounded p-mt-3 p-mb-3" @click="openMaximizable(slotProps.data)" :disabled="slotProps.data.id == 0"/>                            
+                        </div>
                   </div>
               </div>
           </template>
@@ -49,7 +46,6 @@
              <Dialog :header.sync="message.title" :visible.sync="message.display" :style="{width: '50vw'}" :modal="true">
                 {{message.content}}
             </Dialog>
-        </div>
     <router-view/>
   </div>
 </template>
@@ -96,6 +92,9 @@ export default {
         })
         this.varSearchService.getCourseRandom(10).then(data=>{
             this.courses = data.data;
+            if(data.data.length == 0){
+                this.courses = [{id:0,title:'Aun no hay cursos',description:'Unete y se el primero',averageScore:0}]
+            }
         })
 
     }, 

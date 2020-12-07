@@ -8,8 +8,6 @@
                 </template>
             </Toolbar>            
             <DataTable ref="dt" :value="courses" :selection.sync="courseSelection" dataKey="id" :paginator="true" :rows="10">
-                
-                <Column field="id" header="ID"></Column>
                 <Column field="title" header="Curso"></Column>
                 <Column field="description" header="Descripcion"></Column>
                 <Column :exportable="false">

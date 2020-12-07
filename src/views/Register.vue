@@ -121,7 +121,10 @@ export default {
             if (this.huser==true && this.hemail==true && this.hpassword==true && this.hvpassword==true && this.hdescription==true){
                 this.userService.addUser(this.user).then(data => {
                     console.log(data);
-                    if(data.request.status==201) this.mostrar("Registro exitoso");
+                    if(data.request.status==201){ 
+                        this.mostrar("Registro exitoso");
+                        setTimeout(() => this.$router.push({path:'/login'}), 1000);
+                    }
                     else this.mostrar("Error en el registro")
                 }).catch(error =>{
                     if( error.response.status === 400 ){
