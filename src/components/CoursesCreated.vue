@@ -160,7 +160,7 @@
                         <strong>{{col.asking_user.name}}</strong><br/>{{col.text}}<br/>
                     </div>  
                     <div style="margin-right:0;">                     
-                        <Button label='Responder' class="p-button-rounded  p-button-success" @click="openReply(index, col)"/>  
+                        <Button label='Responder' class="p-button-rounded  p-button-success" @click="openReply(index, col)" :disabled="col.id == 0"/>  
                     </div>           
                     <div style="margin-top: .5em">
                         <transition-group name="dynamic-box" tag="div">
@@ -500,7 +500,16 @@ export default {
                             }
                         );
                     });
-                    setTimeout(() => this.questions = data.data, 200);                    
+                    if(data.data.length == 0)
+                        this.questions = [{
+                            id: 0,
+                            asking_user: {
+                                name: "Aun no hay preguntas"
+                            },
+                            text: "",
+                            replys:[]
+                        }];
+                    else setTimeout(() => this.questions = data.data, 200);
                 }
             );
             this.displayQuestions = true;
