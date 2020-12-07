@@ -220,7 +220,11 @@ export default {
         next: function(){
             this.posLesson += 1;            
             this.lesson = this.lessons[this.posLesson]; 
-            this.resources = this.lessons.resources;
+            this.coursesService.getResources(this.lesson.id).then(
+                data=>{
+                    this.lesson.resources = data.data;
+                }
+            );
             document.getElementById('description').innerHTML = this.lesson.description; 
             document.getElementById('resource').innerHTML = '';
             this.getQuestions(); 
@@ -228,7 +232,11 @@ export default {
         previous: function(){
             this.posLesson -= 1;
             this.lesson = this.lessons[this.posLesson];
-            this.resources = this.lessons.resources;
+            this.coursesService.getResources(this.lesson.id).then(
+                data=>{
+                    this.lesson.resources = data.data;
+                }
+            );
             document.getElementById('description').innerHTML = this.lesson.description; 
             document.getElementById('resource').innerHTML = '';
             this.getQuestions(); 
