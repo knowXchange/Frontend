@@ -181,7 +181,8 @@ import Topbar from '../components/topbar.vue';
             obtenerReseñas(){
                 this.ReviewService.getAllReseñas(this.course.id).then(data=>{
                     this.reseñas = data.data;
-                    console.log(this.reseñas)
+                    if(data.data.length == 0)
+                        this.reseñas=[{opiningUser:{name:'Aun no hay reseñas Para esta leccion'},grade:0,description:':('}];
                 });
             },
             searchBranch: function(){

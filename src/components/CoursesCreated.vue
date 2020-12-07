@@ -177,6 +177,13 @@
             <Textarea v-model="replyDialog.text" placeholder="Cual es tu respuesta" rows="3" cols="30" style="width: 95%"/>
             <Button label='Publicar' class="p-button-rounded  p-button-success" @click="reply()"/>
         </Dialog>
+        <Dialog :visible.sync="displayDelete" header='Eliminar elemento' :modal="true" :style="{width: '80vw'}">
+            ¿Desea eliminar el elemento?, esta accion es permanente.
+            <template #footer>
+                <Button label='Confirmar' class="p-button-rounded  p-button-danger" @click="deleteElement()"/>
+                <Button label='Cancelar' class="p-button-rounded  p-button-success" @click="displayDelete = false"/>
+            </template>
+        </Dialog>
     </div>   
 </template>
 <script>    
@@ -201,6 +208,8 @@ export default {
             displayReviews: false,
             displayQuestions: false,
             displayReply: false,
+            displayDelete: false,
+            targetDelete: null,
             courses: [],
             course:{}, 
             lessons:[],
@@ -285,11 +294,11 @@ export default {
             if(this.course.id == null){
                 this.coursesService.addCourse(localStorage.getItem("id"),this.selectedBranch.id,course).then(data=>{
                     this.coursesService.addLessons(data.data,lessons);
-                    this.course.id = data.data;                                        
-                }); 
-                this.courses.push(this.course);                
-                this.displayCreate=false;
-                this.resetCourseFields(); 
+                    this.course.id = data.data; 
+                    this.courses.push(this.course);  
+                    this.resetCourseFields();                                     
+                });                                 
+                this.displayCreate=false;                 
             }else{
                 if(this.selectedBranch != null) course.fieldId == this.selectedBranch.id;
                 this.coursesService.updateCourse(course).then(data=>{
@@ -298,8 +307,7 @@ export default {
                     }else alert('Error al actulizar el  curso');                                     
                 });                
                 this.displayCreate=false;
-                this.resetCourseFields();             
-
+                this.resetCourseFields();
             }                            
         },
         editCourse: function(course){
@@ -320,9 +328,10 @@ export default {
             this.coursesService.addLessons(course.id, lessons);
             this.displayCreate = false;
         },
-        deleteCourse: function(course){         
-            this.coursesService.delete(course.id);
-            this.courses = this.courses.filter(val =>val.id !== course.id);
+        deleteCourse: function(course){ 
+            this.course = course;  
+            this.targetDelete = 0;
+            this.displayDelete = true;            
         },
         newLesson: function(){
             if(this.lesson.title == null || this.lesson.title=="")
@@ -333,9 +342,8 @@ export default {
             else this.hlessonDescription = true;            
             if(this.hlessonTitle && this.hlessonDescription){
                 this.lesson.resources = this.resources;
-                if( this.index == null ){
-                    var temp = this.lesson;
-                    this.lessons.push( temp );
+                if( this.index == null ){                    
+                    this.lessons.push( this.lesson );
                 }
                 else{
                     this.lessons[this.index] = this.lesson;
@@ -348,9 +356,9 @@ export default {
             }
         },
         deleteLesson: function(lesson){
-            if(this.course.id != null)
-                this.coursesService.deleteLesson(lesson.id);
-            this.lessons = this.lessons.filter(val =>val !== lesson);
+            this.lesson = lesson;
+            this.targetDelete = 1;
+            this.displayDelete = true;
         },
         editLesson: function(index, Lesson){
             this.resetLessonFields();
@@ -442,17 +450,9 @@ export default {
 
         },
         deleteResourse: function(resource){
-            if(resource.id == null)
-                this.resources = this.resources.filter(val =>val !== resource);
-            else{
-                this.coursesService.deleteResource(resource.id).then(data=>{
-                    if(data.data == 'Deleted')
-                        this.resources = this.resources.filter(val =>val !== resource);
-                    else alert('La operacion no tuvo exito');
-                }).catch(error=>{
-                    alert('error en el servidor')
-                });
-            }
+            this.resource = resource;
+            this.targetDelete = 3;
+            this.displayDelete = true;            
         },        
         resetCourseFields: function(){            
             this.htitle = true;
@@ -481,7 +481,6 @@ export default {
                 this.reseñas = data.data;
                 if(data.data.length == 0)
                 this.reseñas=[{opiningUser:{name:'Aun no hay reseñas Para esta leccion'},grade:0,description:':('}];
-                console.log(data.data);
             });            
             this.coursesService.getLessons(course.id).then(data=>{
                 this.lessons = data.data
@@ -532,6 +531,30 @@ export default {
             this.displayReply = false;
             this.replyDialog = {};
             this.question = {};
+        },
+        deleteElement(){
+            if(this.targetDelete == 0){
+                this.coursesService.delete(this.course.id);
+                this.courses = this.courses.filter(val =>val.id !== this.course.id);
+            }else if(this.targetDelete == 1){
+                if(this.course.id != null)
+                    this.coursesService.deleteLesson(this.lesson.id);
+                this.lessons = this.lessons.filter(val =>val !== this.lesson);
+            }else if(this.targetDelete == 2){
+                if(this.resource.id == null)
+                    this.resources = this.resources.filter(val =>val !== this.resource);
+                else{
+                    this.coursesService.deleteResource(this.resource.id).then(data=>{
+                        if(data.data == 'Deleted')
+                            this.resources = this.resources.filter(val =>val !== this.resource);
+                        else alert('La operacion no tuvo exito');
+                    }).catch(error=>{
+                        alert('error en el servidor')
+                    });
+                }
+            }else alert('No se reconoce el elemento a eliminar');
+
+            this.displayDelete = false;
         }
     }    
 }

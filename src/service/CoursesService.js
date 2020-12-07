@@ -54,11 +54,14 @@ export default class UserService {
                     }
                 );
             }else{
-                axios.put(this.url2+"modifyLesson", Lessons[index]);
-                for (let i= 0; i < Lessons[index].resources.length; i++) {
-                    if(Lessons[index].resources[i].id == null)
-                        axios.post(this.url3 + "addResource/"+Lessons[index].id, Lessons[index].resources[i]);
+                axios.put(this.url2+"modifyLesson", Lessons[index]).then(
+                data => {
+                    for (let i= 0; i < Lessons[index].resources.length; i++) {
+                        if(Lessons[index].resources[i].id == null)
+                            axios.post(this.url3 + "addResource/"+Lessons[index].id, Lessons[index].resources[i]);
+                    }
                 }
+                );                
             }
         }
     }

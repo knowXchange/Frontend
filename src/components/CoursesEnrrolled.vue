@@ -179,16 +179,18 @@ export default {
         publishReseña: function(){
             this.RService.postReseñas(this.reseñas.text, this.course.id, this.grade).then(
                 data => {
-                    console.log(data.data);
-                    
+                    if(data.request.status === 200)
+                        this.displayReseñas = false;
+                    else alert('Error al publicar la reseña');                    
                 }
                 );
             },
         showReseñas: function(course){
             this.course = course; 
             this.RService.exits(localStorage.getItem('id'),this.course.id).then(data=>{
-                console.log(data.data)
-                this.dButton = data.data;
+                if(data.data=='true' || data.data== true)
+                    this.dButton = true;
+                else this.dButton = false;
             });
             this.displayReseñas = true;
         },
