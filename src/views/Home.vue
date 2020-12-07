@@ -123,7 +123,9 @@ export default {
                         console.log(data);                        
                             this.message.title = "Resultado de la operacion";
                             this.message.content = data.data;
-                            this.message.display=true;                    
+                            this.message.display=true;
+                            if(data.data=='Registro exitoso :D')
+                                this.message.content = data.data + ' Puedes encontrar el curso en Usuario >> mis cursos >> cursos inscritos';                     
                     });       
         }
     } 

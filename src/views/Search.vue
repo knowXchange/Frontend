@@ -242,6 +242,7 @@ import Topbar from '../components/topbar.vue';
                             this.message.content = data.data;
                             this.message.display=true;
                             if(data.data=='Registro exitoso :D')
+                                this.message.content = data.data + ' Puedes encontrar el curso en Usuario >> mis cursos >> cursos inscritos';
                                 setTimeout(() => location.reload(), 1000);                        
                     });          
             }

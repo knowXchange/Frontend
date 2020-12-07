@@ -287,7 +287,7 @@ export default {
                     this.coursesService.addLessons(data.data,lessons);
                     this.course.id = data.data;                                        
                 }); 
-                this.courses.push(this,course);                
+                this.courses.push(this.course);                
                 this.displayCreate=false;
                 this.resetCourseFields(); 
             }else{
