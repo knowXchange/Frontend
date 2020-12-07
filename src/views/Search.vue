@@ -172,6 +172,10 @@ import Topbar from '../components/topbar.vue';
             this.kbService.getBbyK().then(data=>{
                  this.branch = data.data;
             })
+            this.entrada = localStorage.getItem('text');
+            this.buscarSubcadena();
+
+            
         },
         methods:{
             obtenerReseñas(){
@@ -237,7 +241,8 @@ import Topbar from '../components/topbar.vue';
                             this.message.title = "Resultado de la operacion";
                             this.message.content = data.data;
                             this.message.display=true;
-                        
+                            if(data.data=='Registro exitoso :D')
+                                setTimeout(() => location.reload(), 1000);                        
                     });          
             }
             

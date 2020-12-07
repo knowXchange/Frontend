@@ -23,6 +23,7 @@ import Rating from 'primevue/rating';
 import DataView from 'primevue/dataview';
 import Checkbox from 'primevue/checkbox';
 import ScrollPanel from 'primevue/scrollpanel';
+import InputNumber from 'primevue/inputnumber';
 
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
@@ -62,6 +63,7 @@ Vue.component('Carousel', Carousel);
 Vue.component('DataView', DataView);
 Vue.component('Checkbox', Checkbox);
 Vue.component('ScrollPanel', ScrollPanel);
+Vue.component('InputNumber',InputNumber);
 
 Vue.component('Accordion',Accordion);
 Vue.component('AccordionTab',AccordionTab);

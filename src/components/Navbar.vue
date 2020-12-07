@@ -8,7 +8,7 @@
                     <Button label="Buscar Cursos"  class="p-button-rounded p-button-success" :style="{'margin-left': '0 .5em'}" @click="irBuscar"/>
                     <!-- Barra de busqueda -->
                     <b-nav-form style="margin:0px 20px 0px 20px;">                            
-                    <b-form-input class="mx-auto" placeholder="Search" style="border-color:green; background:#f8f9fa; color:#28a745;"></b-form-input>            
+                    <b-form-input v-model="text" class="mx-auto" placeholder="Search" style="border-color:green; background:#f8f9fa; color:#28a745;"></b-form-input>            
                     </b-nav-form>
                     <!-- Boton de inicio de sesión -->
                     <Button :label.sync="buttonLabelA" style="background:#f8f9fa;" class="p-button-outlined p-button-success p-mr-2" @click="actionA()"/>
@@ -32,7 +32,8 @@ export default {
     varSearchService : null,
     userService: null,
     data() {        
-            return {      
+            return { 
+            text: '',     
             curso: null,
             id: null,
             entrada: null,
@@ -76,7 +77,8 @@ export default {
             }
         },
         irBuscar(){
-            this.$router.push('search')
+            localStorage.setItem('text',this.text.trim());
+            this.$router.push('search');
         }
     }
 

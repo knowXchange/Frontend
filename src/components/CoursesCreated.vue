@@ -22,8 +22,13 @@
             <Dialog :visible.sync="displayCreate" header="Crear Curso" :modal="true" :style="{width: '90vw'}">
                 <div class="p-field p-fluid">
                     <h5 class="p-text-left">Titulo del curso</h5>
-                    <InputText id="titulo" type="titulo" v-model="course.title"/>
+                    <InputText id="titulo" type="titulo" v-model="course.title"/>                    
                     <small id="courseTitle-help" class="p-invalid" :hidden="htitle">Falta titulo.</small>
+                </div>
+                <div class="p-text-left p-mb-4">
+                    <h5 >Costo en tokens</h5>
+                    <InputNumber placeholder="Entre 0 y 100" id="tokens" v-model="course.tokensCost" :useGrouping="false" :min="0" :max="100"/>
+                    <small id="tokens-help" class="p-invalid" :hidden="htokens">Escriba un valor</small>
                 </div>
                 <div class="p-mr-2 p-mb-2 p-text-left">
                     <h5>Clasifique el curso</h5>
@@ -31,7 +36,7 @@
                     <Dropdown v-model="selectedBranch" :options="branch" optionLabel="title" placeholder="Rama" class="p-mr-2"/>
                     <small id="courseFilter-help" class="p-invalid" :hidden="hfilter">Por favor clasifique el curso.</small>
                 </div>
-                    
+                
                 <div class="p-field p-fluid">
                     <h5 class="p-text-left">Descripcion</h5>
                     <Textarea id="descripcion" type="descripcion" v-model="course.description"/>
@@ -147,6 +152,7 @@ export default {
             resources:[],
             resource: {},
             htitle: true,
+            htokens: true,
             hfilter: true,
             hdescription: true, 
             hlessonTitle: true,
@@ -297,7 +303,9 @@ export default {
             else this.hdescription=true;
             if(this.lessons.length == 0) this.hlessonTable = false;
             else this.hlessonTable = true;
-            if(this.htitle && this.hdescription && this.hlessonTable){                 
+            if(this.course.tokensCost == null) this.htokens = false;
+            else this.htokens=true;
+            if(this.htitle && this.hdescription && this.hlessonTable && this.htokens){                 
                 this.createCourse(this.course, this.lessons);               
             }
         },

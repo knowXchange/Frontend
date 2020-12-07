@@ -100,34 +100,33 @@ export default {
 
     }, 
     methods:{
-    openMaximizable(course) {
-                this.course = course;
-                this.varSearchService.getLessons(course.id).then(data=>{
-                    this.lessons = data.data
-                });
-                this.displayMaximizable = true;                
-    },
-    closeMaximizable() {
-                this.displayMaximizable = false;
-                
-    },
-    inscribir: function(){
-                if(localStorage.getItem('id')!=0)
+        openMaximizable(course) {
+                    this.course = course;
+                    this.varSearchService.getLessons(course.id).then(data=>{
+                        this.lessons = data.data
+                    });
+                    this.displayMaximizable = true;                
+        },
+        closeMaximizable() {
+                    this.displayMaximizable = false;
+                    
+        },
+        inscribir: function(){
+
+            if(localStorage.getItem('id')==0 || localStorage.getItem('id')==null){
+                    this.message.title = "Resultado de la operacion";
+                    this.message.content = "Por favor inicie sesion antes de ralizar una inscripcion";
+                    this.message.display=true;
+                }
+                else if(localStorage.getItem('id')!=0)
                     this.userService.registerCourse(localStorage.getItem('id'),this.course.id)
                     .then(data=>{
-                        console.log(data);
-                        if (data.status === 200){
-                            this.message.title = 'Inscripcion Exitosa';
-                            this.message.content = 'La inscripcion al curso fue exitosa, podras encontrar el curso en tu perfil >> cursos >> cursos inscritos'
-                            this.message.display=true;
-                        }
-                        else{
-                            this.message.title = 'Inscripcion Fallida';
-                            this.message.content = 'La inscripcion al curso no fue exitosa';
-                            this.message.display=true;
-                        }
-                    });          
-            }
+                        console.log(data);                        
+                            this.message.title = "Resultado de la operacion";
+                            this.message.content = data.data;
+                            this.message.display=true;                    
+                    });       
+        }
     } 
 }
 </script>
