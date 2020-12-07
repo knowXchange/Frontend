@@ -202,7 +202,6 @@ export default {
             this.resetCourseFields();
         },
         createCourse: function(course, lessons){
-            console.log(course);
             if(this.course.id == null){
                 this.coursesService.addCourse(localStorage.getItem("id"),this.selectedBranch.id,course).then(data=>{
                     this.coursesService.addLessons(data.data,lessons);
@@ -212,10 +211,10 @@ export default {
                 this.displayCreate=false;
                 this.resetCourseFields(); 
             }else{
-                if(this.selectedBranch.id != null) course.fieldId();
+                if(this.selectedBranch != null) course.fieldId == this.selectedBranch.id;
                 this.coursesService.updateCourse(course).then(data=>{
                     if(data.request.status == 200){
-                        this.coursesService.addLessons(data.data,lessons);
+                        this.coursesService.addLessons(course.id,lessons);
                     }else alert('Error al actulizar el  curso');                                     
                 });                
                 this.displayCreate=false;
