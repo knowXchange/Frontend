@@ -202,15 +202,26 @@ export default {
             this.resetCourseFields();
         },
         createCourse: function(course, lessons){
-            if(this.selectedBranch != null){
+            console.log(course);
+            if(this.course.id == null){
                 this.coursesService.addCourse(localStorage.getItem("id"),this.selectedBranch.id,course).then(data=>{
-                    console.log(data);
                     this.coursesService.addLessons(data.data,lessons);
                     this.course.id = data.data;                                        
                 }); 
                 this.courses.push(this,course);                
-                this.displayCreate=false;                            
-            }    
+                this.displayCreate=false;
+                this.resetCourseFields(); 
+            }else{
+                if(this.selectedBranch.id != null) course.fieldId();
+                this.coursesService.updateCourse(course).then(data=>{
+                    if(data.request.status == 200){
+                        this.coursesService.addLessons(data.data,lessons);
+                    }else alert('Error al actulizar el  curso');                                     
+                });                
+                this.displayCreate=false;
+                this.resetCourseFields();             
+
+            }                            
         },
         editCourse: function(course){
             this.course = course;
@@ -266,7 +277,15 @@ export default {
             this.resetLessonFields();
             this.index = index;
             this.lesson = Lesson;
-            this.resources = Lesson.resources;
+            if(Lesson.id != null){
+                this.coursesService.getResources(Lesson.id).then(
+                    data =>{
+                        this.resources = data.data;
+                    }
+                );
+            }else{
+                this.resources = this.lessons[index].resources;
+            }
             this.displayLesson = true;
         },
         courseAction: function(){   
@@ -280,8 +299,7 @@ export default {
             if(this.lessons.length == 0) this.hlessonTable = false;
             else this.hlessonTable = true;
             if(this.htitle && this.hdescription && this.hlessonTable){                 
-                this.createCourse(this.course, this.lessons);
-                this.resetCourseFields();
+                this.createCourse(this.course, this.lessons);               
             }
         },
         checkedRs(resource){

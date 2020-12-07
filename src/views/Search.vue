@@ -225,7 +225,12 @@ import Topbar from '../components/topbar.vue';
                 });
             },
             inscribir: function(){
-                if(localStorage.getItem('id')!=0)
+                if(localStorage.getItem('id')==0 || localStorage.getItem('id')==null){
+                    this.message.title = "Resultado de la operacion";
+                    this.message.content = "Por favor inicie sesion antes de ralizar una inscripcion";
+                    this.message.display=true;
+                }
+                else if(localStorage.getItem('id')!=0)
                     this.userService.registerCourse(localStorage.getItem('id'),this.course.id)
                     .then(data=>{
                         console.log(data);                        

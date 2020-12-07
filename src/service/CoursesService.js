@@ -10,17 +10,14 @@ export default class UserService {
     addCourse(ownerId, branchId, course){
         return axios.post(this.url+"addCourse/"+ownerId+'/'+branchId, course);
     }
+    updateCourse(course){
+        return axios.put(this.url+"modifyCourse/"+course.id, course);
+    }
+    updateLesson(lesson){
+        return axios.put(this.url2+"modifyLesson/"+lesson.id, lesson);
+    }
     addResource(resource){
         return axios.post(this.url3+"addResources", resource)
-    }
-    add(Course){
-        return axios.post(
-            this.url +
-            "addNewKXCourse?title="+Course.title+
-            "&description="+Course.description+
-            "&tokensCost=0"+
-            "&branch_id="+Course.branchId+
-            "&ownerId="+localStorage.getItem('id'))
     }
     getCreated(){
         return axios.get(this.url+"getByOwner/"+localStorage.getItem('id'))
@@ -45,16 +42,24 @@ export default class UserService {
     }
     addLessons(id, Lessons){
         for (let index = 0; index < Lessons.length; index++) {  
-            console.log(Lessons[index])          
-            axios.post(this.url2+"addLesson/" + id, Lessons[index])
-                .then(data=>{
-                    for (let i= 0; i < Lessons[index].resources.length; i++) {
-                        console.log(i);
-                        if(data.data != null){
-                            axios.post(this.url3 + "addResource/"+data.data, Lessons[index].resources[i]);                           
-                        }
-                    }                   
-                });
+            console.log(Lessons[index])  
+            if(Lessons[index].id == null) {       
+                axios.post(this.url2+"addLesson/" + id, Lessons[index])
+                    .then(data=>{
+                        for (let i= 0; i < Lessons[index].resources.length; i++) {
+                            if(data.data != null){
+                                axios.post(this.url3 + "addResource/"+data.data, Lessons[index].resources[i]);                           
+                            }
+                        }                   
+                    }
+                );
+            }else{
+                axios.put(this.url2+"modifyLesson", Lessons[index]);
+                for (let i= 0; i < Lessons[index].resources.length; i++) {
+                    if(Lessons[index].resources[i].id == null)
+                        axios.post(this.url3 + "addResource/"+Lessons[index].id, Lessons[index].resources[i]);
+                }
+            }
         }
     }
     deleteLesson(id){
